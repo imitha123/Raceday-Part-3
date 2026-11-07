@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="poepart2/poepart2.csproj" />
+  <Project Path="RaceDay part 3/RaceDay part 3.csproj" Id="945f6352-a1b1-4da6-8780-7058fcd8f09e" />
   <Project Path="Testing_Poe/Testing_Poe.csproj" Id="805005a3-2304-47ee-a6e5-b1ecaf086442" />
 </Solution>

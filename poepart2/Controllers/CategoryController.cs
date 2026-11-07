@@ -36,6 +36,7 @@ namespace poepart2.Controllers
 
                 while (reader.Read())
                 {
+
                     categories.Add(new
                     {
                         categoryID = reader.GetInt32(0),
