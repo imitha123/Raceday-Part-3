@@ -129,8 +129,8 @@ namespace RaceDay_part_3.Controllers
 
             var model = new CategoryCreateViewModel
             {
-                Name = category.Name,
-                Description = category.Description
+                Name = category.CategoryName,
+                Description = category.CategoryDescription
             };
 
             ViewBag.CategoryId = id;

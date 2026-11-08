@@ -1,0 +1,134 @@
+﻿@model RaceDay_part_3.ViewModels.EventCreateViewModel
+
+@{
+    ViewData["Title"] = "Create Event";
+}
+
+<div class="container mt-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-7">
+
+            <div class="card shadow">
+
+                <div class="card-header bg-primary text-white">
+                    <h4>Create New Event</h4>
+                </div>
+
+                <div class="card-body p-4">
+
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger">
+                            @ViewBag.Error
+                        </div>
+                    }
+
+                    <form asp-action="Create" method="post">
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger mb-3">
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="EventName"
+                                   class="form-label">
+                                Event Name
+                            </label>
+
+                            <input asp-for="EventName"
+                                   class="form-control"
+                                   placeholder="Enter event name" />
+
+                            <span asp-validation-for="EventName"
+                                  class="text-danger">
+                            </span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="EventLocation"
+                                   class="form-label">
+                                Event Location
+                            </label>
+
+                            <input asp-for="EventLocation"
+                                   class="form-control"
+                                   placeholder="Enter event location" />
+
+                            <span asp-validation-for="EventLocation"
+                                  class="text-danger">
+                            </span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="EventDate"
+                                   class="form-label">
+                                Event Date
+                            </label>
+
+                            <input asp-for="EventDate"
+                                   class="form-control"
+                                   placeholder="Enter date in API-supported format" />
+
+                            <span asp-validation-for="EventDate"
+                                  class="text-danger">
+                            </span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="CategoryID"
+                                   class="form-label">
+                                Event Category
+                            </label>
+
+                            <select asp-for="CategoryID"
+                                    class="form-select">
+
+                                <option value="">Select a category</option>
+
+                                @if (ViewBag.Categories != null)
+                                {
+                                    foreach (var category in ViewBag.Categories)
+                                    {
+                                        <option value="@category.CategoryId">
+                                            @category.CategoryName
+                                        </option>
+                                    }
+                                }
+
+                            </select>
+
+                            <span asp-validation-for="CategoryID"
+                                  class="text-danger">
+                            </span>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+
+                            <a asp-action="Index"
+                               class="btn btn-outline-secondary">
+                                Cancel
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-primary">
+                                Create Event
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
