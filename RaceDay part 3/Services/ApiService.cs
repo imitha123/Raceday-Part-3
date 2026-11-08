@@ -174,8 +174,9 @@ namespace RaceDay_part_3.Services
         }
 
         // CREATE EVENT
+        // CREATE EVENT
         public async Task<HttpResponseMessage> CreateEventAsync(
-            EventCreateViewModel model, string token)
+            EventCreateViewModel model, int organizerId, string token)
         {
             var request = CreateAuthorizedRequest(
                 HttpMethod.Post, "api/Event", token);
@@ -185,7 +186,8 @@ namespace RaceDay_part_3.Services
                 eventName = model.EventName,
                 eventLocation = model.EventLocation,
                 eventDate = model.EventDate,
-                categoryId = model.CategoryID
+                categoryID = model.CategoryID,
+                organizerID = model.OrganizerID
             });
 
             return await _httpClient.SendAsync(request);

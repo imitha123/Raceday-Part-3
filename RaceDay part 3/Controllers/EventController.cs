@@ -117,11 +117,12 @@ namespace RaceDay_part_3.Controllers
             return View(new EventCreateViewModel());
         }
 
-        // POST: Event/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(
-            EventCreateViewModel model)
+      
+// POST: Event/Create
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> Create(
+    EventCreateViewModel model)
         {
             if (!IsOrganizer())
                 return RedirectToAction("Login", "Organizer");
@@ -129,25 +130,27 @@ namespace RaceDay_part_3.Controllers
             string token =
                 HttpContext.Session.GetString("Token") ?? "";
 
-            model.OrganizerID = int.Parse(
-                HttpContext.Session.GetString("UserId") ?? "0");
+            string organizerIdString =
+                HttpContext.Session.GetString("UserId") ?? "";
+
+            if (!int.TryParse(organizerIdString, out int organizerId)
+                || organizerId <= 0)
+            {
+                return RedirectToAction("Login", "Organizer");
+            }
 
             if (!ModelState.IsValid)
             {
-                await LoadCategoriesAsync(
-                    token, model.CategoryID);
-
+                await LoadCategoriesAsync(token, model.CategoryID);
                 return View(model);
             }
 
-            var response =
-                await _apiService.CreateEventAsync(model, token);
+            var response = await _apiService.CreateEventAsync(
+                model, organizerId, token);
 
             if (response.IsSuccessStatusCode)
             {
-                TempData["Success"] =
-                    "Event created successfully!";
-
+                TempData["Success"] = "Event created successfully!";
                 return RedirectToAction("Index");
             }
 
@@ -158,6 +161,7 @@ namespace RaceDay_part_3.Controllers
 
             return View(model);
         }
+
 
         // GET: Event/Edit/5
         public async Task<IActionResult> Edit(int id)
