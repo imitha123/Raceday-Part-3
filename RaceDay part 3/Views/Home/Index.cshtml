@@ -1,8 +1,78 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Welcome to RaceDay";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-5">
+
+    <div class="text-center mb-5">
+
+        <h1 class="display-3 fw-bold">
+            RACEDAY
+        </h1>
+
+        <h3>Welcome to RaceDay Event Management</h3>
+
+        <p class="lead">
+            Your platform for managing and participating
+            in exciting events.
+        </p>
+
+    </div>
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-5 mb-4">
+
+            <div class="card shadow p-4 text-center">
+
+                <h2>Organizer</h2>
+
+                <p>
+                    Manage events, categories and results.
+                </p>
+
+                <a asp-controller="Organizer"
+                   asp-action="Login"
+                   class="btn btn-primary mb-2">
+                    Organizer Login
+                </a>
+
+                <a asp-controller="Organizer"
+                   asp-action="Register"
+                   class="btn btn-outline-primary">
+                    Create Organizer Account
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-5 mb-4">
+
+            <div class="card shadow p-4 text-center">
+
+                <h2>Participant</h2>
+
+                <p>
+                    Discover events and manage your registrations.
+                </p>
+
+                <a asp-controller="Participant"
+                   asp-action="Login"
+                   class="btn btn-success mb-2">
+                    Participant Login
+                </a>
+
+                <a asp-controller="Participant"
+                   asp-action="Register"
+                   class="btn btn-outline-success">
+                    Create Participant Account
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </div>

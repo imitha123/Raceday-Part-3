@@ -1,0 +1,70 @@
+﻿@{
+    ViewData["Title"] = "Organizer Dashboard";
+}
+
+<div class="container mt-5">
+
+    <div class="card shadow p-4">
+
+        <h1>Organizer Dashboard</h1>
+
+        <h4>Welcome, @Context.Session.GetString("UserName")!</h4>
+
+        <p>
+            Welcome to your RaceDay Organizer Dashboard.
+            Manage your events and keep track of your activities.
+        </p>
+
+        <hr />
+
+        <h5>Organizer Menu</h5>
+
+        <div class="row mt-4">
+
+            <div class="col-md-4 mb-3">
+                <div class="card p-3">
+                    <h5>Manage Events</h5>
+                    <p>Create, update and manage events.</p>
+                    <a href="#" class="btn btn-primary">
+                        Manage Events
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <div class="card p-3">
+                    <h5>Manage Categories</h5>
+                    <p>View and manage event categories.</p>
+                    <a href="#" class="btn btn-primary">
+                        Manage Categories
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <div class="card p-3">
+                    <h5>View Results</h5>
+                    <p>View event results.</p>
+                    <a href="#" class="btn btn-primary">
+                        View Results
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <form asp-controller="Organizer"
+              asp-action="Logout"
+              method="post">
+
+            <button type="submit" class="btn btn-danger">
+                Logout
+            </button>
+
+        </form>
+
+    </div>
+
+
+
+</div>
