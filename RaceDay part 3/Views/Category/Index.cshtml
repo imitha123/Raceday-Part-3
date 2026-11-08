@@ -1,0 +1,147 @@
+﻿@model IEnumerable<RaceDay_part_3.ViewModels.CategoryViewModel>
+
+@{
+    ViewData["Title"] = "Manage Categories";
+}
+
+<div class="container mt-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2>Category Management</h2>
+            <p class="text-muted">
+                Create and manage your event categories.
+            </p>
+        </div>
+
+        <a asp-controller="Category"
+           asp-action="Create"
+           class="btn btn-primary">
+            + Add Category
+        </a>
+
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.Error
+        </div>
+    }
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Available Categories</h5>
+        </div>
+
+        <div class="card-body">
+
+            @if (Model != null && Model.Any())
+            {
+                <div class="table-responsive">
+
+                    <table class="table table-striped table-hover">
+
+                        <thead>
+                            <tr>
+                                <th>Category ID</th>
+                                <th>Category Name</th>
+                                <th>Description</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var category in Model)
+                            {
+                                <tr>
+
+                                    <td>@category.CategoryId</td>
+
+                                    <td>@category.Name</td>
+
+                                    <td>@category.Description</td>
+
+                                    <td>
+                                        <a asp-controller="Category"
+                                           asp-action="Edit"
+                                           asp-route-id="@category.CategoryId"
+                                           class="btn btn-sm btn-warning">
+                                            Edit
+                                        </a>
+
+                                        <form asp-controller="Category"
+                                              asp-action="Delete"
+                                              asp-route-id="@category.CategoryId"
+                                              method="post"
+                                              class="d-inline">
+
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-danger"
+                                                    onclick="return confirm('Are you sure you want to delete this category?');">
+                                                Delete
+                                            </button>
+
+                                        </form>
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+
+                    <h5>No Categories Found</h5>
+
+                    <p class="text-muted">
+                        You haven't created any event categories yet.
+                    </p>
+
+                    <a asp-controller="Category"
+                       asp-action="Create"
+                       class="btn btn-primary">
+                        Create Your First Category
+                    </a>
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+    <div class="mt-4">
+
+        <a asp-controller="Organizer"
+           asp-action="Dashboard"
+           class="btn btn-outline-secondary">
+            Back to Dashboard
+        </a>
+
+    </div>
+
+</div>
