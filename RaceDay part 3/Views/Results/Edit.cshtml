@@ -1,5 +1,79 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model RaceDay_part_3.ViewModels.ResultEditViewModel
+
 @{
+    ViewData["Title"] = "Edit Result";
+}
+
+<h2>Edit Result</h2>
+
+<div class="row">
+    <div class="col-md-6">
+
+        <form asp-action="Edit"
+              asp-route-id="@Model.ResultID"
+              method="post">
+
+            <input type="hidden" asp-for="ResultID" />
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger"></div>
+
+            <div class="form-group mb-3">
+                <label class="form-label">Result ID</label>
+
+                <input value="@Model.ResultID"
+                       class="form-control"
+                       readonly />
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="ParticipantID" class="form-label">
+                    Participant ID
+                </label>
+
+                <input asp-for="ParticipantID" class="form-control" />
+
+                <span asp-validation-for="ParticipantID"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Position" class="form-label">
+                    Position
+                </label>
+
+                <input asp-for="Position" class="form-control" />
+
+                <span asp-validation-for="Position"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Score" class="form-label">
+                    Score
+                </label>
+
+                <input asp-for="Score" class="form-control" />
+
+                <span asp-validation-for="Score"
+                      class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                Save Changes
+            </button>
+
+            <a asp-action="Index" class="btn btn-secondary">
+                Cancel
+            </a>
+
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

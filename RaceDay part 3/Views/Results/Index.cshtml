@@ -1,5 +1,102 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<RaceDay_part_3.ViewModels.ResultViewModel>
+
 @{
+    ViewData["Title"] = "Results";
+    var isOrganizer = Context.Session.GetString("Role") == "Organizer";
+}
+
+<h2>Results Management</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+
+@if (isOrganizer)
+{
+    <a asp-action="Create" class="btn btn-primary mb-3">
+        Add New Result
+    </a>
+}
+
+@if (Model.Any())
+{
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Result ID</th>
+                <th>Participant ID</th>
+                <th>Position</th>
+                <th>Score</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.ResultID</td>
+                    <td>@item.ParticipantID</td>
+                    <td>@item.Position</td>
+                    <td>@item.Score</td>
+
+                    <td>
+                        <a asp-action="Details"
+                           asp-route-id="@item.ResultID"
+                           class="btn btn-info btn-sm">
+                            Details
+                        </a>
+
+                        @if (isOrganizer)
+                        {
+                            <a asp-action="Edit"
+                               asp-route-id="@item.ResultID"
+                               class="btn btn-warning btn-sm">
+                                Edit
+                            </a>
+
+                            <a asp-action="Delete"
+                               asp-route-id="@item.ResultID"
+                               class="btn btn-danger btn-sm">
+                                Delete
+                            </a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-info">
+        No results are currently available.
+    </div>
+}
+
+@if (isOrganizer)
+{
+    <a asp-controller="Organizer"
+       asp-action="Dashboard"
+       class="btn btn-secondary">
+        Back to Dashboard
+    </a>
+}
+else
+{
+    <a asp-controller="Participant"
+       asp-action="Dashboard"
+       class="btn btn-secondary">
+        Back to Dashboard
+    </a>
 }
