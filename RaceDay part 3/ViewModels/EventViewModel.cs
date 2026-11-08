@@ -2,7 +2,7 @@
 {
     public class EventViewModel
     {
-        public int ÈventID { get; set; }
+        public int ÈventId { get; set; }
 
         public string EventName { get; set; } = string.Empty;
 

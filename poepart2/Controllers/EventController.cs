@@ -314,12 +314,15 @@ namespace poepart2.Controllers
                     });
                 }
 
+
+
                 string query = @"
-                UPDATE Event_
-                SET eventName = @name,
-                    eventLocation = @location,
-                    eventDate = @date
-                WHERE eventId = @id";
+               UPDATE Event_
+SET eventName = @name,
+    eventLocation = @location,
+    eventDate = @date,
+    categoryID = @categoryID
+WHERE eventId = @id";
 
                 using SqlCommand command = new SqlCommand(query, connection);
 
@@ -327,6 +330,7 @@ namespace poepart2.Controllers
                 command.Parameters.AddWithValue("@name", updatedEvent.EventName.Trim());
                 command.Parameters.AddWithValue("@location", updatedEvent.EventLocation.Trim());
                 command.Parameters.AddWithValue("@date", parsedEventDate);
+                command.Parameters.AddWithValue("@categoryID",updatedEvent.categoryID);
 
                 int rowsAffected = command.ExecuteNonQuery();
 

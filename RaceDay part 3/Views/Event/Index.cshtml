@@ -61,7 +61,7 @@
                             @foreach (var item in Model)
                             {
                                 <tr>
-                                    <td>@item.ÈventID</td>
+                                    <td>@item.ÈventId</td>
                                     <td>@item.EventName</td>
                                     <td>@item.EventLocation</td>
                                     <td>@item.EventDate</td>
@@ -69,19 +69,19 @@
 
                                     <td>
                                         <a asp-action="Details"
-                                           asp-route-id="@item.ÈventID"
+                                           asp-route-id="@item.ÈventId"
                                            class="btn btn-sm btn-info">
                                             Details
                                         </a>
 
                                         <a asp-action="Edit"
-                                           asp-route-id="@item.ÈventID"
+                                           asp-route-id="@item.ÈventId"
                                            class="btn btn-sm btn-warning">
                                             Edit
                                         </a>
 
                                         <form asp-action="Delete"
-                                              asp-route-id="@item.ÈventID"
+                                              asp-route-id="@item.ÈventId"
                                               method="post"
                                               class="d-inline">
 
