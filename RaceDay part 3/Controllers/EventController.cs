@@ -17,8 +17,29 @@ namespace RaceDay_part_3.Controllers
         // CHECK ORGANIZER ACCESS
         private bool IsOrganizer()
         {
-            return HttpContext.Session.GetString("Role")
-                == "Organizer";
+            return HttpContext.Session.GetString("Role") == "Organizer";
+        }
+
+        // CHECK PARTICIPANT ACCESS
+        private bool IsParticipant()
+        {
+            return HttpContext.Session.GetString("Role") == "Participant";
+        }
+
+        // CHECK LOGIN
+        private bool IsLoggedIn()
+        {
+            return !string.IsNullOrEmpty(
+                HttpContext.Session.GetString("Token"));
+        }
+
+        // REDIRECT TO THE CORRECT LOGIN PAGE
+        private IActionResult RedirectToLogin()
+        {
+            if (IsParticipant())
+                return RedirectToAction("Login", "Participant");
+
+            return RedirectToAction("Login", "Organizer");
         }
 
         // LOAD CATEGORIES FOR DROPDOWN
@@ -47,11 +68,18 @@ namespace RaceDay_part_3.Controllers
             }
         }
 
+        // ==========================================
         // GET: Event/Index
+        // BOTH PARTICIPANTS AND ORGANIZERS
+        // ==========================================
+
         public async Task<IActionResult> Index()
         {
-            if (!IsOrganizer())
-                return RedirectToAction("Login", "Organizer");
+            if (!IsLoggedIn())
+                return RedirectToLogin();
+
+            if (!IsOrganizer() && !IsParticipant())
+                return RedirectToLogin();
 
             string token =
                 HttpContext.Session.GetString("Token") ?? "";
@@ -74,11 +102,18 @@ namespace RaceDay_part_3.Controllers
             return View(events ?? new List<EventViewModel>());
         }
 
+        // ==========================================
         // GET: Event/Details/5
+        // BOTH PARTICIPANTS AND ORGANIZERS
+        // ==========================================
+
         public async Task<IActionResult> Details(int id)
         {
-            if (!IsOrganizer())
-                return RedirectToAction("Login", "Organizer");
+            if (!IsLoggedIn())
+                return RedirectToLogin();
+
+            if (!IsOrganizer() && !IsParticipant())
+                return RedirectToLogin();
 
             string token =
                 HttpContext.Session.GetString("Token") ?? "";
@@ -103,11 +138,18 @@ namespace RaceDay_part_3.Controllers
             return View(eventDetails);
         }
 
+        // ==========================================
         // GET: Event/Create
+        // ORGANIZER ONLY
+        // ==========================================
+
         public async Task<IActionResult> Create()
         {
+            if (!IsLoggedIn())
+                return RedirectToLogin();
+
             if (!IsOrganizer())
-                return RedirectToAction("Login", "Organizer");
+                return Forbid();
 
             string token =
                 HttpContext.Session.GetString("Token") ?? "";
@@ -117,15 +159,21 @@ namespace RaceDay_part_3.Controllers
             return View(new EventCreateViewModel());
         }
 
-      
-// POST: Event/Create
-[HttpPost]
-[ValidateAntiForgeryToken]
-public async Task<IActionResult> Create(
-    EventCreateViewModel model)
+        // ==========================================
+        // POST: Event/Create
+        // ORGANIZER ONLY
+        // ==========================================
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(
+            EventCreateViewModel model)
         {
+            if (!IsLoggedIn())
+                return RedirectToLogin();
+
             if (!IsOrganizer())
-                return RedirectToAction("Login", "Organizer");
+                return Forbid();
 
             string token =
                 HttpContext.Session.GetString("Token") ?? "";
@@ -162,12 +210,18 @@ public async Task<IActionResult> Create(
             return View(model);
         }
 
-
+        // ==========================================
         // GET: Event/Edit/5
+        // ORGANIZER ONLY
+        // ==========================================
+
         public async Task<IActionResult> Edit(int id)
         {
+            if (!IsLoggedIn())
+                return RedirectToLogin();
+
             if (!IsOrganizer())
-                return RedirectToAction("Login", "Organizer");
+                return Forbid();
 
             string token =
                 HttpContext.Session.GetString("Token") ?? "";
@@ -206,20 +260,33 @@ public async Task<IActionResult> Create(
             return View(model);
         }
 
+        // ==========================================
         // POST: Event/Edit/5
+        // ORGANIZER ONLY
+        // ==========================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
             int id, EventCreateViewModel model)
         {
+            if (!IsLoggedIn())
+                return RedirectToLogin();
+
             if (!IsOrganizer())
-                return RedirectToAction("Login", "Organizer");
+                return Forbid();
 
             string token =
                 HttpContext.Session.GetString("Token") ?? "";
 
-            model.OrganizerID = int.Parse(
-                HttpContext.Session.GetString("UserId") ?? "0");
+            if (!int.TryParse(
+                HttpContext.Session.GetString("UserId"),
+                out int organizerId) || organizerId <= 0)
+            {
+                return RedirectToAction("Login", "Organizer");
+            }
+
+            model.OrganizerID = organizerId;
 
             if (!ModelState.IsValid)
             {
@@ -253,13 +320,20 @@ public async Task<IActionResult> Create(
             return View(model);
         }
 
+        // ==========================================
         // POST: Event/Delete/5
+        // ORGANIZER ONLY
+        // ==========================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
+            if (!IsLoggedIn())
+                return RedirectToLogin();
+
             if (!IsOrganizer())
-                return RedirectToAction("Login", "Organizer");
+                return Forbid();
 
             string token =
                 HttpContext.Session.GetString("Token") ?? "";

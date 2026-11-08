@@ -1,5 +1,37 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model RaceDay_part_3.ViewModels.EnrollmentViewModel
+
 @{
+    ViewData["Title"] = "Enrollment Details";
 }
+
+<div class="container mt-4">
+
+    <h2>Enrollment Details</h2>
+
+    <div class="card shadow-sm mt-3">
+
+        <div class="card-header">
+            Enrollment Information
+        </div>
+
+        <div class="card-body">
+
+            <dl class="row">
+
+                <dt class="col-sm-4">Event ID</dt>
+                <dd class="col-sm-8">@Model.EventID</dd>
+
+                <dt class="col-sm-4">Participant ID</dt>
+                <dd class="col-sm-8">@Model.ParticipantID</dd>
+
+            </dl>
+
+            <a asp-action="Index" class="btn btn-secondary">
+                Back to Enrollments
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

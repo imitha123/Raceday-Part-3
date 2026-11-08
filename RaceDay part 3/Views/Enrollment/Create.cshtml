@@ -1,5 +1,65 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model RaceDay_part_3.ViewModels.EnrollmentCreateViewModel
+
 @{
+    ViewData["Title"] = "Enroll in Event";
+}
+
+<div class="container mt-4">
+
+    <h2>Enroll in an Event</h2>
+
+    <p class="text-muted">
+        Select the event you would like to participate in.
+    </p>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <form asp-action="Create" method="post">
+
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3">
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="EventID" class="form-label">
+                        Select Event
+                    </label>
+
+                    <select asp-for="EventID"
+                            asp-items="ViewBag.Events"
+                            class="form-select">
+
+                        <option value="">-- Select an Event --</option>
+
+                    </select>
+
+                    <span asp-validation-for="EventID"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    Confirm Enrollment
+                </button>
+
+                <a asp-action="Index" class="btn btn-secondary">
+                    Cancel
+                </a>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

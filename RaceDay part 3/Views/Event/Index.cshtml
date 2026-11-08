@@ -1,35 +1,52 @@
 ﻿@model IEnumerable<RaceDay_part_3.ViewModels.EventViewModel>
 
 @{
-    ViewData["Title"] = "Manage Events";
+    ViewData["Title"] = "Events";
+    var isOrganizer = Context.Session.GetString("Role") == "Organizer";
 }
 
 <div class="container mt-5">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
+
         <div>
-            <h2>Event Management</h2>
-            <p class="text-muted">Create and manage sporting events.</p>
+            <h2>@(isOrganizer ? "Event Management" : "Browse Events")</h2>
+
+            <p class="text-muted">
+                @(isOrganizer
+                    ? "Create and manage sporting events."
+                    : "Discover sporting events and find something to participate in.")
+            </p>
         </div>
 
-        <a asp-action="Create" class="btn btn-primary">
-            + Create Event
-        </a>
+        @if (isOrganizer)
+        {
+            <a asp-action="Create" class="btn btn-success">
+                Create Event
+            </a>
+        }
+
     </div>
 
     @if (TempData["Success"] != null)
     {
-        <div class="alert alert-success">@TempData["Success"]</div>
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
     }
 
     @if (TempData["Error"] != null)
     {
-        <div class="alert alert-danger">@TempData["Error"]</div>
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
     }
 
     @if (ViewBag.Error != null)
     {
-        <div class="alert alert-danger">@ViewBag.Error</div>
+        <div class="alert alert-danger">
+            @ViewBag.Error
+        </div>
     }
 
     <div class="card shadow">
@@ -58,9 +75,11 @@
                         </thead>
 
                         <tbody>
+
                             @foreach (var item in Model)
                             {
                                 <tr>
+
                                     <td>@item.eventId</td>
                                     <td>@item.EventName</td>
                                     <td>@item.EventLocation</td>
@@ -68,33 +87,42 @@
                                     <td>@item.CategoryID</td>
 
                                     <td>
+
                                         <a asp-action="Details"
                                            asp-route-id="@item.eventId"
                                            class="btn btn-sm btn-info">
                                             Details
                                         </a>
 
-                                        <a asp-action="Edit"
-                                           asp-route-id="@item.eventId"
-                                           class="btn btn-sm btn-warning">
-                                            Edit
-                                        </a>
+                                        @if (isOrganizer)
+                                        {
+                                            <a asp-action="Edit"
+                                               asp-route-id="@item.eventId"
+                                               class="btn btn-sm btn-warning">
+                                                Edit
+                                            </a>
 
-                                        <form asp-action="Delete"
-                                              asp-route-id="@item.eventId"
-                                              method="post"
-                                              class="d-inline">
+                                            <form asp-action="Delete"
+                                                  asp-route-id="@item.eventId"
+                                                  method="post"
+                                                  class="d-inline">
 
-                                            <button type="submit"
-                                                    class="btn btn-sm btn-danger"
-                                                    onclick="return confirm('Delete this event?');">
-                                                Delete
-                                            </button>
+                                                @Html.AntiForgeryToken()
 
-                                        </form>
+                                                <button type="submit"
+                                                        class="btn btn-sm btn-danger"
+                                                        onclick="return confirm('Delete this event?');">
+                                                    Delete
+                                                </button>
+
+                                            </form>
+                                        }
+
                                     </td>
+
                                 </tr>
                             }
+
                         </tbody>
 
                     </table>
@@ -104,24 +132,44 @@
             else
             {
                 <div class="text-center py-5">
+
                     <h5>No Events Found</h5>
+
                     <p class="text-muted">
-                        You haven't created any events yet.
+                        @(isOrganizer
+                            ? "You haven't created any events yet."
+                            : "There are currently no events available.")
                     </p>
 
-                    <a asp-action="Create" class="btn btn-primary">
-                        Create Your First Event
-                    </a>
+                    @if (isOrganizer)
+                    {
+                        <a asp-action="Create" class="btn btn-primary">
+                            Create Your First Event
+                        </a>
+                    }
+
                 </div>
             }
 
         </div>
+
     </div>
 
-    <a asp-controller="Organizer"
-       asp-action="Dashboard"
-       class="btn btn-outline-secondary mt-4">
-        Back to Dashboard
-    </a>
+    @if (isOrganizer)
+    {
+        <a asp-controller="Organizer"
+           asp-action="Dashboard"
+           class="btn btn-outline-secondary mt-4">
+            Back to Dashboard
+        </a>
+    }
+    else
+    {
+        <a asp-controller="Participant"
+           asp-action="Dashboard"
+           class="btn btn-outline-secondary mt-4">
+            Back to Dashboard
+        </a>
+    }
 
 </div>

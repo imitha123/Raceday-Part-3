@@ -1,5 +1,54 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model RaceDay_part_3.ViewModels.EnrollmentViewModel
+
 @{
+    ViewData["Title"] = "Delete Enrollment";
 }
+
+<div class="container mt-4">
+
+    <h2>Delete Enrollment</h2>
+
+    <div class="alert alert-warning">
+        Are you sure you want to delete this enrollment?
+        This action cannot be undone.
+    </div>
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            <dl class="row">
+
+                <dt class="col-sm-4">Event ID</dt>
+                <dd class="col-sm-8">@Model.EventID</dd>
+
+                <dt class="col-sm-4">Participant ID</dt>
+                <dd class="col-sm-8">@Model.ParticipantID</dd>
+
+            </dl>
+
+            <form asp-action="Delete" method="post">
+
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" name="eventId"
+                       value="@Model.EventID" />
+
+                <input type="hidden" name="participantId"
+                       value="@Model.ParticipantID" />
+
+                <button type="submit" class="btn btn-danger">
+                    Confirm Delete
+                </button>
+
+                <a asp-action="Index" class="btn btn-secondary">
+                    Cancel
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

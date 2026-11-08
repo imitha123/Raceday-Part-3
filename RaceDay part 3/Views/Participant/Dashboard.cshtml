@@ -22,41 +22,70 @@
 
         <div class="row mt-4">
 
+            <!-- BROWSE EVENTS -->
             <div class="col-md-4 mb-3">
-                <div class="card p-3">
+                <div class="card p-3 h-100">
+
                     <h5>Browse Events</h5>
-                    <p>Discover available events.</p>
-                    <a href="#" class="btn btn-primary">
+
+                    <p>Discover available events and find something to participate in.</p>
+
+                    <a asp-controller="Event"
+                       asp-action="Index"
+                       class="btn btn-primary">
                         Browse Events
                     </a>
+
                 </div>
             </div>
 
+            <!-- MY REGISTRATIONS -->
             <div class="col-md-4 mb-3">
-                <div class="card p-3">
+                <div class="card p-3 h-100">
+
                     <h5>My Registrations</h5>
-                    <p>View your registered events.</p>
-                    <a href="#" class="btn btn-primary">
+
+                    <p>View your registered events and manage your enrollments.</p>
+
+                    <a asp-controller="Enrollment"
+                       asp-action="Index"
+                       class="btn btn-primary">
                         My Registrations
                     </a>
+
                 </div>
             </div>
 
+            <!-- MY RESULTS -->
             <div class="col-md-4 mb-3">
-                <div class="card p-3">
+                <div class="card p-3 h-100">
+
                     <h5>My Results</h5>
-                    <p>Track your event results.</p>
-                    <a href="#" class="btn btn-primary">
+
+                    <p>Track your performance and results from completed events.</p>
+
+                    <a asp-controller="Result"
+                       asp-action="Index"
+                       class="btn btn-secondary">
                         My Results
                     </a>
+
+                    <small class="text-muted mt-2">
+                        Results section coming soon.
+                    </small>
+
                 </div>
             </div>
 
         </div>
 
-        <form asp-controller="Organizer"
+        <hr />
+
+        <form asp-controller="Participant"
               asp-action="Logout"
               method="post">
+
+            @Html.AntiForgeryToken()
 
             <button type="submit" class="btn btn-danger">
                 Logout

@@ -1,5 +1,93 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model RaceDay_part_3.ViewModels.EnrollmentEditViewModel
+
 @{
+    ViewData["Title"] = "Edit Enrollment";
+}
+
+<div class="container mt-4">
+
+    <h2>Edit Enrollment</h2>
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            <form asp-action="Edit" method="post">
+
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3">
+                </div>
+
+                <input type="hidden" asp-for="EventID" />
+                <input type="hidden" asp-for="ParticipantID" />
+
+                <h5>Current Enrollment</h5>
+
+                <p>
+                    Event ID: <strong>@Model.EventID</strong>
+                    <br />
+                    Participant ID: <strong>@Model.ParticipantID</strong>
+                </p>
+
+                <hr />
+
+                <h5>New Enrollment Details</h5>
+
+                <div class="mb-3">
+
+                    <label asp-for="NewEventID" class="form-label">
+                        New Event
+                    </label>
+
+                    <select asp-for="NewEventID"
+                            asp-items="ViewBag.Events"
+                            class="form-select">
+
+                        <option value="">-- Select Event --</option>
+
+                    </select>
+
+                    <span asp-validation-for="NewEventID"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="NewParticipantID" class="form-label">
+                        New Participant ID
+                    </label>
+
+                    <input asp-for="NewParticipantID"
+                           class="form-control" />
+
+                    <span asp-validation-for="NewParticipantID"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+                <button type="submit" class="btn btn-warning">
+                    Update Enrollment
+                </button>
+
+                <a asp-action="Index" class="btn btn-secondary">
+                    Cancel
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
