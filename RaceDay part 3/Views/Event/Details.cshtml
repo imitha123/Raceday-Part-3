@@ -49,11 +49,14 @@
                             Back to Events
                         </a>
 
-                        <a asp-action="Edit"
-                           asp-route-id="@Model.eventId"
-                           class="btn btn-warning">
-                            Edit Event
-                        </a>
+                        @if (Context.Session.GetString("Role") == "Organizer")
+                        {
+                            <a asp-action="Edit"
+                               asp-route-id="@Model.eventId"
+                               class="btn btn-warning">
+                                Edit Event
+                            </a>
+                        }
 
                     </div>
 
