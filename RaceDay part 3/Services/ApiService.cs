@@ -292,5 +292,72 @@ namespace RaceDay_part_3.Services
 
             return await _httpClient.SendAsync(request);
         }
+
+        // ==============================
+        // RESULT MANAGEMENT
+        // ==============================
+
+        // GET ALL RESULTS
+        public async Task<HttpResponseMessage> GetResultsAsync(string token)
+        {
+            var request = CreateAuthorizedRequest(
+                HttpMethod.Get, "api/Result", token);
+
+            return await _httpClient.SendAsync(request);
+        }
+
+        // GET RESULT BY ID
+        public async Task<HttpResponseMessage> GetResultByIdAsync(
+            int resultId, string token)
+        {
+            var request = CreateAuthorizedRequest(
+                HttpMethod.Get, $"api/Result/{resultId}", token);
+
+            return await _httpClient.SendAsync(request);
+        }
+
+        // CREATE RESULT
+        public async Task<HttpResponseMessage> CreateResultAsync(
+            ResultCreateViewModel model, string token)
+        {
+            var request = CreateAuthorizedRequest(
+                HttpMethod.Post, "api/Result", token);
+
+            request.Content = JsonContent.Create(new
+            {
+                position = model.Position,
+                score = model.Score,
+                participantId = model.ParticipantID
+            });
+
+            return await _httpClient.SendAsync(request);
+        }
+
+        // UPDATE RESULT
+        public async Task<HttpResponseMessage> UpdateResultAsync(
+            int resultId, ResultEditViewModel model, string token)
+        {
+            var request = CreateAuthorizedRequest(
+                HttpMethod.Put, $"api/Result/{resultId}", token);
+
+            request.Content = JsonContent.Create(new
+            {
+                position = model.Position,
+                score = model.Score,
+                participantId = model.ParticipantID
+            });
+
+            return await _httpClient.SendAsync(request);
+        }
+
+        // DELETE RESULT
+        public async Task<HttpResponseMessage> DeleteResultAsync(
+            int resultId, string token)
+        {
+            var request = CreateAuthorizedRequest(
+                HttpMethod.Delete, $"api/Result/{resultId}", token);
+
+            return await _httpClient.SendAsync(request);
+        }
     }
 }
