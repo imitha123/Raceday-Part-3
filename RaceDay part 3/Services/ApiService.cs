@@ -187,7 +187,7 @@ namespace RaceDay_part_3.Services
                 eventLocation = model.EventLocation,
                 eventDate = model.EventDate,
                 categoryID = model.CategoryID,
-                organizerID = model.OrganizerID
+                organizerID = organizerId
             });
 
             return await _httpClient.SendAsync(request);
