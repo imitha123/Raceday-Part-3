@@ -145,7 +145,7 @@ namespace poepart2.Controllers
                 // Check whether the event exists.
                 string eventQuery = @"
                 SELECT COUNT(*)
-                FROM Event
+                FROM Event_
                 WHERE EventID = @eventId";
 
                 using SqlCommand eventCommand =
@@ -306,7 +306,7 @@ namespace poepart2.Controllers
                 // Check that the new event exists.
                 string eventQuery = @"
                 SELECT COUNT(*)
-                FROM Event
+                FROM Event_
                 WHERE EventID = @newEventId";
 
                 using SqlCommand eventCommand =

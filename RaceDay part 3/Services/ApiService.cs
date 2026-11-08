@@ -221,6 +221,76 @@ namespace RaceDay_part_3.Services
             return await _httpClient.SendAsync(request);
         }
 
+        // ==============================
+        // ENROLLMENT MANAGEMENT
+        // ==============================
 
+        // GET ALL ENROLLMENTS
+        public async Task<HttpResponseMessage> GetEnrollmentsAsync(
+            string token)
+        {
+            var request = CreateAuthorizedRequest(
+                HttpMethod.Get, "api/Enrollment", token);
+
+            return await _httpClient.SendAsync(request);
+        }
+
+
+        // GET ENROLLMENT BY EVENT ID AND PARTICIPANT ID
+        public async Task<HttpResponseMessage> GetEnrollmentAsync(
+            int eventId, int participantId, string token)
+        {
+            var request = CreateAuthorizedRequest(
+                HttpMethod.Get,
+                $"api/Enrollment/{eventId}/{participantId}",
+                token);
+
+            return await _httpClient.SendAsync(request);
+        }
+
+
+        // CREATE ENROLLMENT
+        public async Task<HttpResponseMessage> CreateEnrollmentAsync(
+            int eventId, int participantId, string token)
+        {
+            var request = CreateAuthorizedRequest(
+                HttpMethod.Post,
+                $"api/Enrollment?eventId={eventId}&participantId={participantId}",
+                token);
+
+            return await _httpClient.SendAsync(request);
+        }
+
+
+        // UPDATE ENROLLMENT
+        public async Task<HttpResponseMessage> UpdateEnrollmentAsync(
+            int eventId,
+            int participantId,
+            int newEventId,
+            int newParticipantId,
+            string token)
+        {
+            var request = CreateAuthorizedRequest(
+                HttpMethod.Put,
+                $"api/Enrollment/{eventId}/{participantId}" +
+                $"?newEventId={newEventId}" +
+                $"&newParticipantId={newParticipantId}",
+                token);
+
+            return await _httpClient.SendAsync(request);
+        }
+
+
+        // DELETE ENROLLMENT
+        public async Task<HttpResponseMessage> DeleteEnrollmentAsync(
+            int eventId, int participantId, string token)
+        {
+            var request = CreateAuthorizedRequest(
+                HttpMethod.Delete,
+                $"api/Enrollment/{eventId}/{participantId}",
+                token);
+
+            return await _httpClient.SendAsync(request);
+        }
     }
 }
