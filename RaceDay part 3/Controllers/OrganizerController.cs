@@ -48,12 +48,29 @@ namespace RaceDay_part_3.Controllers
 
             string GetValue(string property)
             {
-                return data.TryGetProperty(property, out JsonElement value)
-                    ? value.ToString()
-                    : "";
+                foreach (JsonProperty item in data.EnumerateObject())
+                {
+                    if (string.Equals(
+                        item.Name,
+                        property,
+                        StringComparison.OrdinalIgnoreCase))
+                    {
+                        return item.Value.ToString();
+                    }
+                }
+
+                return "";
             }
 
             string token = GetValue("token");
+            string organizerId = GetValue("organizerId");
+
+            if (!int.TryParse(organizerId, out int parsedOrganizerId)
+                || parsedOrganizerId <= 0)
+            {
+                ViewBag.Error = "Login response did not contain a valid organizer ID.";
+                return View(model);
+            }
 
             if (string.IsNullOrWhiteSpace(token))
             {
@@ -62,7 +79,7 @@ namespace RaceDay_part_3.Controllers
             }
 
             HttpContext.Session.SetString(
-                "UserId", GetValue("organizerId"));
+    "UserId", parsedOrganizerId.ToString());
 
             HttpContext.Session.SetString(
                 "UserName", GetValue("organizerName"));
