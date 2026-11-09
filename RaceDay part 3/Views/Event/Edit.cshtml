@@ -5,13 +5,10 @@
 }
 
 <div class="container mt-5">
-
     <div class="row justify-content-center">
-
         <div class="col-md-7">
 
             <div class="card shadow">
-
                 <div class="card-header bg-warning">
                     <h4>Edit Event</h4>
                 </div>
@@ -27,63 +24,54 @@
 
                     <form asp-action="Edit"
                           asp-route-id="@ViewBag.EventId"
-                          method="post">
+                          method="post"
+                          enctype="multipart/form-data">
 
                         <div asp-validation-summary="ModelOnly"
                              class="text-danger mb-3">
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="EventName"
-                                   class="form-label">
+                            <label asp-for="EventName" class="form-label">
                                 Event Name
                             </label>
 
-                            <input asp-for="EventName"
-                                   class="form-control" />
+                            <input asp-for="EventName" class="form-control" />
 
                             <span asp-validation-for="EventName"
-                                  class="text-danger">
-                            </span>
+                                  class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="EventLocation"
-                                   class="form-label">
+                            <label asp-for="EventLocation" class="form-label">
                                 Event Location
                             </label>
 
-                            <input asp-for="EventLocation"
-                                   class="form-control" />
+                            <input asp-for="EventLocation" class="form-control" />
 
                             <span asp-validation-for="EventLocation"
-                                  class="text-danger">
-                            </span>
+                                  class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="EventDate"
-                                   class="form-label">
+                            <label asp-for="EventDate" class="form-label">
                                 Event Date
                             </label>
 
                             <input asp-for="EventDate"
+                                   type="date"
                                    class="form-control" />
 
                             <span asp-validation-for="EventDate"
-                                  class="text-danger">
-                            </span>
+                                  class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="CategoryID"
-                                   class="form-label">
+                            <label asp-for="CategoryID" class="form-label">
                                 Event Category
                             </label>
 
-                            <select asp-for="CategoryID"
-                                    class="form-select">
-
+                            <select asp-for="CategoryID" class="form-select">
                                 <option value="">Select a category</option>
 
                                 @if (ViewBag.Categories != null)
@@ -95,26 +83,52 @@
                                         </option>
                                     }
                                 }
-
                             </select>
 
                             <span asp-validation-for="CategoryID"
-                                  class="text-danger">
-                            </span>
+                                  class="text-danger"></span>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(Model.BannerImagePath))
+                        {
+                            <div class="mb-3">
+                                <label class="form-label">Current Banner</label>
+
+                                <img src="@Model.BannerImagePath"
+                                     alt="Current event banner"
+                                     class="img-fluid rounded"
+                                     style="max-height: 220px; width: 100%; object-fit: cover;" />
+                            </div>
+                        }
+
+                        <div class="mb-3">
+                            <label asp-for="BannerImage" class="form-label">
+                                Replace Banner Image
+                            </label>
+
+                            <input asp-for="BannerImage"
+                                   type="file"
+                                   class="form-control"
+                                   accept=".jpg,.jpeg,.png,.webp" />
+
+                            <small class="text-muted">
+                                Leave empty to keep the current image.
+                                JPG, JPEG, PNG or WebP. Maximum size: 5 MB.
+                            </small>
+
+                            <span asp-validation-for="BannerImage"
+                                  class="text-danger d-block"></span>
                         </div>
 
                         <div class="d-flex justify-content-between">
-
                             <a asp-action="Index"
                                class="btn btn-outline-secondary">
                                 Cancel
                             </a>
 
-                            <button type="submit"
-                                    class="btn btn-warning">
+                            <button type="submit" class="btn btn-warning">
                                 Save Changes
                             </button>
-
                         </div>
 
                     </form>

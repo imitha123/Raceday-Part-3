@@ -175,6 +175,7 @@ namespace RaceDay_part_3.Services
 
         // CREATE EVENT
         // CREATE EVENT
+        // CREATE EVENT
         public async Task<HttpResponseMessage> CreateEventAsync(
             EventCreateViewModel model, int organizerId, string token)
         {
@@ -187,12 +188,14 @@ namespace RaceDay_part_3.Services
                 eventLocation = model.EventLocation,
                 eventDate = model.EventDate,
                 categoryID = model.CategoryID,
-                organizerID = organizerId
+                organizerID = organizerId,
+                bannerImagePath = model.BannerImagePath
             });
 
             return await _httpClient.SendAsync(request);
         }
 
+        // UPDATE EVENT
         // UPDATE EVENT
         public async Task<HttpResponseMessage> UpdateEventAsync(
             int id, EventCreateViewModel model, string token)
@@ -205,7 +208,8 @@ namespace RaceDay_part_3.Services
                 eventName = model.EventName,
                 eventLocation = model.EventLocation,
                 eventDate = model.EventDate,
-                categoryId = model.CategoryID
+                categoryID = model.CategoryID,
+                bannerImagePath = model.BannerImagePath
             });
 
             return await _httpClient.SendAsync(request);

@@ -27,9 +27,9 @@ namespace poepart2.Controllers
                 connection.Open();
 
                 string query = @"
-                SELECT eventId, eventName, eventLocation, eventDate,
-                       categoryID, organizerID
-                FROM Event_";
+SELECT eventId, eventName, eventLocation, eventDate,
+       categoryID, organizerID, bannerImagePath
+FROM Event_";
 
                 using SqlCommand command = new SqlCommand(query, connection);
                 using SqlDataReader reader = command.ExecuteReader();
@@ -45,7 +45,10 @@ namespace poepart2.Controllers
                         EventLocation = reader.GetString(2).Trim(),
                         EventDate = reader.GetValue(3),
                         CategoryID = reader.GetInt32(4),
-                        OrganizerID = reader.GetInt32(5)
+                        OrganizerID = reader.GetInt32(5),
+                        BannerImagePath = reader.IsDBNull(6)
+         ? null
+         : reader.GetString(6).Trim()
                     });
                 }
 
@@ -87,10 +90,10 @@ namespace poepart2.Controllers
                 connection.Open();
 
                 string query = @"
-                SELECT eventId, eventName, eventLocation, eventDate,
-                       categoryID, organizerID
-                FROM Event_
-                WHERE eventId = @id";
+SELECT eventId, eventName, eventLocation, eventDate,
+       categoryID, organizerID, bannerImagePath
+FROM Event_
+WHERE eventId = @id";
 
                 using SqlCommand command = new SqlCommand(query, connection);
                 command.Parameters.AddWithValue("@id", id);
@@ -104,7 +107,6 @@ namespace poepart2.Controllers
                         message = "Event not found."
                     });
                 }
-
                 var eventDetails = new
                 {
                     EventID = reader.GetInt32(0),
@@ -112,7 +114,10 @@ namespace poepart2.Controllers
                     EventLocation = reader.GetString(2).Trim(),
                     EventDate = reader.GetValue(3),
                     CategoryID = reader.GetInt32(4),
-                    OrganizerID = reader.GetInt32(5)
+                    OrganizerID = reader.GetInt32(5),
+                    BannerImagePath = reader.IsDBNull(6)
+                        ? null
+                        : reader.GetString(6).Trim()
                 };
 
                 return Ok(eventDetails);
@@ -207,12 +212,14 @@ namespace poepart2.Controllers
                 }
 
                 string query = @"
-                INSERT INTO Event_
-                    (eventName, eventLocation, eventDate, categoryID, organizerID)
-                VALUES
-                    (@name, @location, @date, @categoryID, @organizerID);
+INSERT INTO Event_
+    (eventName, eventLocation, eventDate, categoryID,
+     organizerID, bannerImagePath)
+VALUES
+    (@name, @location, @date, @categoryID,
+     @organizerID, @bannerImagePath);
 
-                SELECT CAST(SCOPE_IDENTITY() AS INT);";
+SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
                 using SqlCommand command = new SqlCommand(query, connection);
 
@@ -221,6 +228,9 @@ namespace poepart2.Controllers
                 command.Parameters.AddWithValue("@date", parsedEventDate);
                 command.Parameters.AddWithValue("@categoryID", newEvent.categoryID);
                 command.Parameters.AddWithValue("@organizerID", newEvent.organizerID);
+                command.Parameters.AddWithValue(
+    "@bannerImagePath",
+    (object?)newEvent.BannerImagePath ?? DBNull.Value);
 
                 int eventId = (int)command.ExecuteScalar()!;
 
@@ -317,11 +327,12 @@ namespace poepart2.Controllers
 
 
                 string query = @"
-               UPDATE Event_
+UPDATE Event_
 SET eventName = @name,
     eventLocation = @location,
     eventDate = @date,
-    categoryID = @categoryID
+    categoryID = @categoryID,
+    bannerImagePath = @bannerImagePath
 WHERE eventId = @id";
 
                 using SqlCommand command = new SqlCommand(query, connection);
@@ -331,6 +342,9 @@ WHERE eventId = @id";
                 command.Parameters.AddWithValue("@location", updatedEvent.EventLocation.Trim());
                 command.Parameters.AddWithValue("@date", parsedEventDate);
                 command.Parameters.AddWithValue("@categoryID",updatedEvent.categoryID);
+                command.Parameters.AddWithValue(
+    "@bannerImagePath",
+    (object?)updatedEvent.BannerImagePath ?? DBNull.Value);
 
                 int rowsAffected = command.ExecuteNonQuery();
 

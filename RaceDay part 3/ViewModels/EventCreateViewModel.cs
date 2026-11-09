@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
 namespace RaceDay_part_3.ViewModels
 {
@@ -17,5 +18,9 @@ namespace RaceDay_part_3.ViewModels
         public int CategoryID { get; set; }
 
         public int OrganizerID { get; set; }
+
+        public IFormFile? BannerImage { get; set; }
+
+        public string? BannerImagePath { get; set; }
     }
 }
