@@ -1,168 +1,150 @@
 ﻿@{
     ViewData["Title"] = "Participant Dashboard";
-
     var userName = Context.Session.GetString("UserName");
 }
 
 <section class="dashboard-page">
 
-    <div class="dashboard-welcome card p-4 mb-4">
+    <!-- WELCOME HERO -->
+    <div class="dashboard-hero participant-hero">
+        <div class="dashboard-hero-content">
+            <span class="dashboard-eyebrow">
+                <span class="eyebrow-dot"></span>
+                PARTICIPANT PORTAL
+            </span>
 
-        <div class="row align-items-center">
+            <h1>Ready to make<br />your <span>next move?</span></h1>
 
-            <div class="col-md-8">
+            <p>
+                Welcome back, @(string.IsNullOrWhiteSpace(userName) ? "Athlete" : userName).
+                Discover competitions, manage your registrations and
+                keep track of your racing journey.
+            </p>
 
-                <span class="badge bg-primary mb-2">
-                    PARTICIPANT PORTAL
-                </span>
+            <div class="dashboard-hero-actions">
+                <a asp-controller="Event"
+                   asp-action="Index"
+                   class="btn btn-dashboard-primary">
+                    Explore Events <span aria-hidden="true">→</span>
+                </a>
 
-                <h1>Welcome, @userName!</h1>
-
-                <p class="mb-0">
-                    Your RaceDay journey starts here.
-                    Discover sporting events, manage your registrations
-                    and follow your performance.
-                </p>
-
+                <a asp-controller="Enrollment"
+                   asp-action="Index"
+                   class="btn btn-dashboard-secondary">
+                    My Registrations
+                </a>
             </div>
-
-            <div class="col-md-4 text-md-end mt-3 mt-md-0">
-
-                <span class="display-3"
-                      aria-hidden="true">
-                    🏃
-                </span>
-
-            </div>
-
         </div>
 
+        <div class="dashboard-hero-visual" aria-hidden="true">
+            <div class="hero-visual-circle">
+                <span>🏃</span>
+            </div>
+            <div class="hero-visual-label">YOUR RACE. YOUR JOURNEY.</div>
+        </div>
+
+        <div class="hero-decoration hero-decoration-one"></div>
+        <div class="hero-decoration hero-decoration-two"></div>
     </div>
 
-
-    <div class="mb-4">
-
-        <h2>Your Participant Dashboard</h2>
-
-        <p class="text-muted">
-            Select an option below to manage your sporting activities.
-        </p>
-
+    <!-- SECTION HEADING -->
+    <div class="dashboard-section-heading">
+        <div>
+            <span class="section-kicker">YOUR SPACE</span>
+            <h2>Participant Hub</h2>
+            <p>Everything you need to stay connected to your sporting journey.</p>
+        </div>
     </div>
 
-
+    <!-- DASHBOARD CARDS -->
     <div class="row g-4">
 
         <!-- BROWSE EVENTS -->
-
         <div class="col-lg-4 col-md-6">
-
-            <div class="card dashboard-card h-100 p-3">
-
-                <div class="card-body d-flex flex-column">
-
-                    <span class="display-5 mb-3"
-                          aria-hidden="true">
+            <div class="dashboard-feature-card h-100">
+                <div class="feature-card-top">
+                    <div class="feature-icon orange-icon" aria-hidden="true">
                         🏁
-                    </span>
-
-                    <h3 class="card-title h5">
-                        Browse Events
-                    </h3>
-
-                    <p class="card-text">
-                        Explore available sporting events
-                        and find your next challenge.
-                    </p>
-
-                    <a asp-controller="Event"
-                       asp-action="Index"
-                       class="btn btn-primary mt-auto">
-
-                        Explore Events
-
-                    </a>
-
+                    </div>
+                    <span class="feature-number">01</span>
                 </div>
 
-            </div>
+                <h3>Discover Events</h3>
 
+                <p>
+                    Find your next challenge. Explore available sporting
+                    events and discover competitions you can participate in.
+                </p>
+
+                <a asp-controller="Event"
+                   asp-action="Index"
+                   class="feature-link">
+                    Explore events <span aria-hidden="true">→</span>
+                </a>
+            </div>
         </div>
 
-
-        <!-- MY REGISTRATIONS -->
-
+        <!-- REGISTRATIONS -->
         <div class="col-lg-4 col-md-6">
-
-            <div class="card dashboard-card h-100 p-3">
-
-                <div class="card-body d-flex flex-column">
-
-                    <span class="display-5 mb-3"
-                          aria-hidden="true">
+            <div class="dashboard-feature-card h-100">
+                <div class="feature-card-top">
+                    <div class="feature-icon blue-icon" aria-hidden="true">
                         📋
-                    </span>
-
-                    <h3 class="card-title h5">
-                        My Registrations
-                    </h3>
-
-                    <p class="card-text">
-                        View your event registrations
-                        and keep track of your participation.
-                    </p>
-
-                    <a asp-controller="Enrollment"
-                       asp-action="Index"
-                       class="btn btn-primary mt-auto">
-
-                        View Registrations
-
-                    </a>
-
+                    </div>
+                    <span class="feature-number">02</span>
                 </div>
 
-            </div>
+                <h3>My Registrations</h3>
 
+                <p>
+                    Keep track of the events you've enrolled in and
+                    check the status of your registrations.
+                </p>
+
+                <a asp-controller="Enrollment"
+                   asp-action="Index"
+                   class="feature-link">
+                    View registrations <span aria-hidden="true">→</span>
+                </a>
+            </div>
         </div>
 
-
-        <!-- MY RESULTS -->
-
+        <!-- RESULTS -->
         <div class="col-lg-4 col-md-6">
-
-            <div class="card dashboard-card h-100 p-3">
-
-                <div class="card-body d-flex flex-column">
-
-                    <span class="display-5 mb-3"
-                          aria-hidden="true">
+            <div class="dashboard-feature-card h-100">
+                <div class="feature-card-top">
+                    <div class="feature-icon green-icon" aria-hidden="true">
                         🏆
-                    </span>
-
-                    <h3 class="card-title h5">
-                        My Results
-                    </h3>
-
-                    <p class="card-text">
-                        Track your results and review
-                        your performance in completed events.
-                    </p>
-
-                    <a asp-controller="Result"
-                       asp-action="Index"
-                       class="btn btn-accent mt-auto">
-
-                        View My Results
-
-                    </a>
-
+                    </div>
+                    <span class="feature-number">03</span>
                 </div>
 
-            </div>
+                <h3>My Results</h3>
 
+                <p>
+                    Review your competition results and follow
+                    your performance across completed sporting events.
+                </p>
+
+                <a asp-controller="Result"
+                   asp-action="Index"
+                   class="feature-link">
+                    View my results <span aria-hidden="true">→</span>
+                </a>
+            </div>
         </div>
 
+    </div>
+
+    <!-- BOTTOM BANNER -->
+    <div class="dashboard-bottom-banner">
+        <div>
+            <span class="section-kicker">THE FINISH LINE IS JUST THE BEGINNING</span>
+            <h3>Every race tells a story.</h3>
+            <p>Stay active, challenge yourself and make every competition count.</p>
+        </div>
+
+        <span class="bottom-banner-icon" aria-hidden="true">🏅</span>
     </div>
 
 </section>
