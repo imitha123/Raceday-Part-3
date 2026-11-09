@@ -21,40 +21,77 @@ namespace RaceDay_part_3.Controllers
             _apiService = apiService;
         }
 
-        // CHECK LOGIN
+        // ==========================================
+        // SESSION AND ROLE HELPERS
+        // ==========================================
+
         private bool IsLoggedIn()
         {
-            return !string.IsNullOrEmpty(HttpContext.Session.GetString("Token"));
+            return !string.IsNullOrEmpty(
+                HttpContext.Session.GetString("Token"));
         }
 
-        // CHECK ORGANIZER
         private bool IsOrganizer()
         {
             return HttpContext.Session.GetString("Role") == "Organizer";
         }
 
-        // CHECK PARTICIPANT
         private bool IsParticipant()
         {
             return HttpContext.Session.GetString("Role") == "Participant";
         }
 
-        // GET EVENTS FOR DROPDOWNS
-        private async Task LoadEvents(string token, int? selectedEventId = null)
+        private bool HasValidRole()
+        {
+            return IsOrganizer() || IsParticipant();
+        }
+
+        private int? GetUserId()
+        {
+            string? userIdString =
+                HttpContext.Session.GetString("UserId");
+
+            if (int.TryParse(userIdString, out int userId) && userId > 0)
+            {
+                return userId;
+            }
+
+            return null;
+        }
+
+        private IActionResult RedirectToLogin()
+        {
+            if (IsOrganizer())
+                return RedirectToAction("Login", "Organizer");
+
+            return RedirectToAction("Login", "Participant");
+        }
+
+        // ==========================================
+        // LOAD EVENTS FOR DROPDOWNS
+        // ==========================================
+
+        private async Task LoadEvents(
+            string token,
+            int? selectedEventId = null)
         {
             var response = await _apiService.GetEventsAsync(token);
 
             if (!response.IsSuccessStatusCode)
             {
                 ViewBag.Events = new List<SelectListItem>();
+
+                TempData["Error"] = "Unable to load available events.";
                 return;
             }
 
             var json = await response.Content.ReadAsStringAsync();
 
-            var events = JsonSerializer.Deserialize<List<EventViewModel>>(
-                json, _jsonOptions
-            ) ?? new List<EventViewModel>();
+            var events =
+                JsonSerializer.Deserialize<List<EventViewModel>>(
+                    json,
+                    _jsonOptions
+                ) ?? new List<EventViewModel>();
 
             ViewBag.Events = new SelectList(
                 events,
@@ -71,30 +108,40 @@ namespace RaceDay_part_3.Controllers
         public async Task<IActionResult> Index()
         {
             if (!IsLoggedIn())
-                return RedirectToAction("Login", "Participant");
+                return RedirectToLogin();
+
+            if (!HasValidRole())
+                return Forbid();
 
             string token = HttpContext.Session.GetString("Token")!;
-            int userId = HttpContext.Session.GetInt32("UserId") ?? 0;
+
+            int? userId = GetUserId();
+
+            if (IsParticipant() && !userId.HasValue)
+                return RedirectToLogin();
 
             var response = await _apiService.GetEnrollmentsAsync(token);
 
             if (!response.IsSuccessStatusCode)
             {
                 TempData["Error"] = "Unable to retrieve enrollments.";
+
                 return View(new List<EnrollmentViewModel>());
             }
 
             var json = await response.Content.ReadAsStringAsync();
 
-            var enrollments = JsonSerializer.Deserialize<List<EnrollmentViewModel>>(
-                json, _jsonOptions
-            ) ?? new List<EnrollmentViewModel>();
+            var enrollments =
+                JsonSerializer.Deserialize<List<EnrollmentViewModel>>(
+                    json,
+                    _jsonOptions
+                ) ?? new List<EnrollmentViewModel>();
 
-            // Participants only see their own enrollments
+            // Participants only see their own enrollments.
             if (IsParticipant())
             {
                 enrollments = enrollments
-                    .Where(e => e.ParticipantID == userId)
+                    .Where(e => e.ParticipantID == userId!.Value)
                     .ToList();
             }
 
@@ -105,50 +152,70 @@ namespace RaceDay_part_3.Controllers
         // DETAILS
         // ==========================================
 
-        public async Task<IActionResult> Details(int eventId, int participantId)
+        public async Task<IActionResult> Details(
+            int eventId,
+            int participantId)
         {
             if (!IsLoggedIn())
-                return RedirectToAction("Login", "Participant");
+                return RedirectToLogin();
 
-            int userId = HttpContext.Session.GetInt32("UserId") ?? 0;
-
-            // Participants cannot view another participant's enrollment
-            if (IsParticipant() && participantId != userId)
+            if (!HasValidRole())
                 return Forbid();
+
+            int? userId = GetUserId();
+
+            // Participants cannot access another participant's enrollment.
+            if (IsParticipant())
+            {
+                if (!userId.HasValue)
+                    return RedirectToLogin();
+
+                if (participantId != userId.Value)
+                    return Forbid();
+            }
 
             string token = HttpContext.Session.GetString("Token")!;
 
             var response = await _apiService.GetEnrollmentAsync(
-                eventId, participantId, token
+                eventId,
+                participantId,
+                token
             );
 
             if (!response.IsSuccessStatusCode)
             {
                 TempData["Error"] = "Enrollment not found.";
+
                 return RedirectToAction(nameof(Index));
             }
 
             var json = await response.Content.ReadAsStringAsync();
 
-            var enrollment = JsonSerializer.Deserialize<EnrollmentViewModel>(
-                json, _jsonOptions
-            );
+            var enrollment =
+                JsonSerializer.Deserialize<EnrollmentViewModel>(
+                    json,
+                    _jsonOptions
+                );
 
             if (enrollment == null)
+            {
+                TempData["Error"] = "Unable to read enrollment details.";
+
                 return RedirectToAction(nameof(Index));
+            }
 
             return View(enrollment);
         }
 
         // ==========================================
-        // CREATE - PARTICIPANT ENROLLMENT
+        // CREATE - PARTICIPANT ONLY
         // ==========================================
 
         [HttpGet]
         public async Task<IActionResult> Create()
         {
             if (!IsLoggedIn())
-                return RedirectToAction("Login", "Participant");
+                return RedirectToLogin();
 
             if (!IsParticipant())
                 return Forbid();
@@ -162,36 +229,45 @@ namespace RaceDay_part_3.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(EnrollmentCreateViewModel model)
+        public async Task<IActionResult> Create(
+            EnrollmentCreateViewModel model)
         {
             if (!IsLoggedIn())
-                return RedirectToAction("Login", "Participant");
+                return RedirectToLogin();
 
             if (!IsParticipant())
                 return Forbid();
 
             string token = HttpContext.Session.GetString("Token")!;
-            int participantId = HttpContext.Session.GetInt32("UserId") ?? 0;
 
-            if (!ModelState.IsValid || participantId <= 0)
+            int? participantId = GetUserId();
+
+            if (!participantId.HasValue)
+                return RedirectToLogin();
+
+            if (!ModelState.IsValid)
             {
                 await LoadEvents(token, model.EventID);
+
                 return View(model);
             }
 
             var response = await _apiService.CreateEnrollmentAsync(
                 model.EventID,
-                participantId,
+                participantId.Value,
                 token
             );
 
             if (response.IsSuccessStatusCode)
             {
-                TempData["Success"] = "You have successfully enrolled in the event!";
+                TempData["Success"] =
+                    "You have successfully enrolled in the event!";
+
                 return RedirectToAction(nameof(Index));
             }
 
-            string error = await response.Content.ReadAsStringAsync();
+            string error =
+                await response.Content.ReadAsStringAsync();
 
             ModelState.AddModelError(
                 "",
@@ -210,10 +286,12 @@ namespace RaceDay_part_3.Controllers
         // ==========================================
 
         [HttpGet]
-        public async Task<IActionResult> Edit(int eventId, int participantId)
+        public async Task<IActionResult> Edit(
+            int eventId,
+            int participantId)
         {
             if (!IsLoggedIn())
-                return RedirectToAction("Login", "Organizer");
+                return RedirectToLogin();
 
             if (!IsOrganizer())
                 return Forbid();
@@ -221,20 +299,25 @@ namespace RaceDay_part_3.Controllers
             string token = HttpContext.Session.GetString("Token")!;
 
             var response = await _apiService.GetEnrollmentAsync(
-                eventId, participantId, token
+                eventId,
+                participantId,
+                token
             );
 
             if (!response.IsSuccessStatusCode)
             {
                 TempData["Error"] = "Enrollment not found.";
+
                 return RedirectToAction(nameof(Index));
             }
 
             var json = await response.Content.ReadAsStringAsync();
 
-            var enrollment = JsonSerializer.Deserialize<EnrollmentViewModel>(
-                json, _jsonOptions
-            );
+            var enrollment =
+                JsonSerializer.Deserialize<EnrollmentViewModel>(
+                    json,
+                    _jsonOptions
+                );
 
             if (enrollment == null)
                 return RedirectToAction(nameof(Index));
@@ -254,10 +337,11 @@ namespace RaceDay_part_3.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(EnrollmentEditViewModel model)
+        public async Task<IActionResult> Edit(
+            EnrollmentEditViewModel model)
         {
             if (!IsLoggedIn())
-                return RedirectToAction("Login", "Organizer");
+                return RedirectToLogin();
 
             if (!IsOrganizer())
                 return Forbid();
@@ -267,6 +351,7 @@ namespace RaceDay_part_3.Controllers
             if (!ModelState.IsValid)
             {
                 await LoadEvents(token, model.NewEventID);
+
                 return View(model);
             }
 
@@ -280,11 +365,14 @@ namespace RaceDay_part_3.Controllers
 
             if (response.IsSuccessStatusCode)
             {
-                TempData["Success"] = "Enrollment updated successfully!";
+                TempData["Success"] =
+                    "Enrollment updated successfully!";
+
                 return RedirectToAction(nameof(Index));
             }
 
-            string error = await response.Content.ReadAsStringAsync();
+            string error =
+                await response.Content.ReadAsStringAsync();
 
             ModelState.AddModelError(
                 "",
@@ -303,10 +391,12 @@ namespace RaceDay_part_3.Controllers
         // ==========================================
 
         [HttpGet]
-        public async Task<IActionResult> Delete(int eventId, int participantId)
+        public async Task<IActionResult> Delete(
+            int eventId,
+            int participantId)
         {
             if (!IsLoggedIn())
-                return RedirectToAction("Login", "Organizer");
+                return RedirectToLogin();
 
             if (!IsOrganizer())
                 return Forbid();
@@ -314,20 +404,28 @@ namespace RaceDay_part_3.Controllers
             string token = HttpContext.Session.GetString("Token")!;
 
             var response = await _apiService.GetEnrollmentAsync(
-                eventId, participantId, token
+                eventId,
+                participantId,
+                token
             );
 
             if (!response.IsSuccessStatusCode)
             {
                 TempData["Error"] = "Enrollment not found.";
+
                 return RedirectToAction(nameof(Index));
             }
 
             var json = await response.Content.ReadAsStringAsync();
 
-            var enrollment = JsonSerializer.Deserialize<EnrollmentViewModel>(
-                json, _jsonOptions
-            );
+            var enrollment =
+                JsonSerializer.Deserialize<EnrollmentViewModel>(
+                    json,
+                    _jsonOptions
+                );
+
+            if (enrollment == null)
+                return RedirectToAction(nameof(Index));
 
             return View(enrollment);
         }
@@ -336,10 +434,11 @@ namespace RaceDay_part_3.Controllers
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(
-            int eventId, int participantId)
+            int eventId,
+            int participantId)
         {
             if (!IsLoggedIn())
-                return RedirectToAction("Login", "Organizer");
+                return RedirectToLogin();
 
             if (!IsOrganizer())
                 return Forbid();
@@ -347,16 +446,20 @@ namespace RaceDay_part_3.Controllers
             string token = HttpContext.Session.GetString("Token")!;
 
             var response = await _apiService.DeleteEnrollmentAsync(
-                eventId, participantId, token
+                eventId,
+                participantId,
+                token
             );
 
             if (response.IsSuccessStatusCode)
             {
-                TempData["Success"] = "Enrollment deleted successfully!";
+                TempData["Success"] =
+                    "Enrollment deleted successfully!";
             }
             else
             {
-                TempData["Error"] = "Unable to delete enrollment.";
+                TempData["Error"] =
+                    "Unable to delete enrollment.";
             }
 
             return RedirectToAction(nameof(Index));

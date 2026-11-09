@@ -61,12 +61,11 @@ namespace RaceDay_part_3.Controllers
 
             var response = await _apiService.GetResultsAsync(token);
 
-            Console.WriteLine("========== RESULTS DEBUG ==========");
-            Console.WriteLine($"API STATUS: {response.StatusCode}");
+           
 
             if (!response.IsSuccessStatusCode)
             {
-                Console.WriteLine("API FAILED TO RETURN RESULTS.");
+              
 
                 TempData["Error"] = "Unable to retrieve results.";
                 return View(new List<ResultViewModel>());
@@ -74,7 +73,7 @@ namespace RaceDay_part_3.Controllers
 
             var apiResponse = await response.Content.ReadAsStringAsync();
 
-            Console.WriteLine($"RAW API RESPONSE: {apiResponse}");
+           
 
             var results =
                 JsonSerializer.Deserialize<List<ResultViewModel>>(
@@ -84,22 +83,14 @@ namespace RaceDay_part_3.Controllers
                         PropertyNameCaseInsensitive = true
                     }) ?? new List<ResultViewModel>();
 
-            Console.WriteLine($"TOTAL RESULTS RECEIVED: {results.Count}");
+         
 
-            foreach (var result in results)
-            {
-                Console.WriteLine(
-                    $"Result ID: {result.ResultID} | " +
-                    $"Participant ID: {result.ParticipantID}");
-            }
-
-            Console.WriteLine($"SESSION ROLE: {HttpContext.Session.GetString("Role")}");
 
             if (!IsOrganizer())
             {
                 int? participantId = GetUserId();
 
-                Console.WriteLine($"LOGGED-IN PARTICIPANT ID: {participantId}");
+            
 
                 if (participantId == null)
                     return RedirectToAction("Login", "Participant");
@@ -108,12 +99,10 @@ namespace RaceDay_part_3.Controllers
                     .Where(r => r.ParticipantID == participantId)
                     .ToList();
 
-                Console.WriteLine($"MATCHING RESULTS: {results.Count}");
+               
             }
 
-            Console.WriteLine($"FINAL RESULTS SENT TO VIEW: {results.Count}");
-            Console.WriteLine("====================================");
-
+         
             return View(results);
         }
 
