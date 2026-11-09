@@ -1,4 +1,6 @@
-﻿namespace RaceDay_part_3.ViewModels
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace RaceDay_part_3.ViewModels
 {
     public class EnrollmentViewModel
     {
@@ -6,9 +8,10 @@
 
         public int ParticipantID { get; set; }
 
-        // Additional display information
         public string? EventName { get; set; }
 
         public string? ParticipantName { get; set; }
+
+        public string Status { get; set; } = "Pending";
     }
 }

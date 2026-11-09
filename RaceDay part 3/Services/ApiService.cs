@@ -359,5 +359,18 @@ namespace RaceDay_part_3.Services
 
             return await _httpClient.SendAsync(request);
         }
+        public async Task<HttpResponseMessage> UpdateEnrollmentStatusAsync(
+     int eventId,
+     int participantId,
+     string status,
+     string token)
+        {
+            var request = CreateAuthorizedRequest(
+                HttpMethod.Put,
+                $"api/Enrollment/{eventId}/{participantId}/status?status={Uri.EscapeDataString(status)}",
+                token);
+
+            return await _httpClient.SendAsync(request);
+        }
     }
 }

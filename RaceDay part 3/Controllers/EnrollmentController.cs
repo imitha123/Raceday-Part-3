@@ -405,6 +405,76 @@ namespace RaceDay_part_3.Controllers
 
             return View(model);
         }
+        // ==========================================
+        // CONFIRM ENROLLMENT - ORGANIZER ONLY
+        // ==========================================
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateStatus(
+            int eventId,
+            int participantId,
+            string status)
+        {
+            if (!IsLoggedIn())
+                return RedirectToLogin();
+
+            if (!IsOrganizer())
+                return Forbid();
+
+            if (eventId <= 0 || participantId <= 0)
+            {
+                TempData["Error"] = "Invalid enrollment details.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // The MVC interface only allows organizers to confirm.
+            if (status != "Confirmed")
+            {
+                TempData["Error"] = "Invalid enrollment status.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            string token = HttpContext.Session.GetString("Token")!;
+
+            try
+            {
+                var response = await _apiService.UpdateEnrollmentStatusAsync(
+                    eventId,
+                    participantId,
+                    status,
+                    token
+                );
+
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["Success"] =
+                        "Enrollment successfully confirmed!";
+                }
+                else if (response.StatusCode ==
+                         System.Net.HttpStatusCode.NotFound)
+                {
+                    TempData["Error"] = "Enrollment could not be found.";
+                }
+                else
+                {
+                    TempData["Error"] =
+                        "Unable to update enrollment status. Please try again.";
+                }
+            }
+            catch (HttpRequestException)
+            {
+                TempData["Error"] =
+                    "The RaceDay service is currently unavailable.";
+            }
+            catch (TaskCanceledException)
+            {
+                TempData["Error"] =
+                    "The request timed out. Please try again.";
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
 
         // ==========================================
         // DELETE - ORGANIZER ONLY
