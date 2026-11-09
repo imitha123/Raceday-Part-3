@@ -1,13 +1,93 @@
-﻿@if (!string.IsNullOrEmpty(Model.BannerImagePath))
-{
-    <img src="@Model.BannerImagePath"
-         alt="@Model.EventName banner"
-         class="img-fluid"
-         style="width: 100%; max-height: 350px; object-fit: cover;" />
+﻿@model RaceDay_part_3.ViewModels.EventViewModel
+
+@{
+    ViewData["Title"] = "Event Details";
 }
-else
-{
-    <div class="bg-light text-center p-5">
-        <h5 class="text-muted">No event banner available</h5>
+
+<div class="container mt-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-8">
+
+            <div class="card shadow">
+
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Event Details</h4>
+                </div>
+
+                <div class="card-body p-4">
+
+                    @* EVENT BANNER *@
+
+                    @if (!string.IsNullOrEmpty(Model.BannerImagePath))
+                    {
+                        <img src="@Model.BannerImagePath"
+                             alt="@Model.EventName banner"
+                             class="img-fluid rounded mb-4"
+                             style="width: 100%; max-height: 350px; object-fit: cover;" />
+                    }
+                    else
+                    {
+                        <div class="bg-light text-center p-5 rounded mb-4">
+                            <h5 class="text-muted">
+                                No event banner available
+                            </h5>
+                        </div>
+                    }
+
+                    @* EVENT INFORMATION *@
+
+                    <dl class="row">
+
+                        <dt class="col-sm-4">Event ID</dt>
+                        <dd class="col-sm-8">@Model.eventId</dd>
+
+                        <dt class="col-sm-4">Event Name</dt>
+                        <dd class="col-sm-8">@Model.EventName</dd>
+
+                        <dt class="col-sm-4">Location</dt>
+                        <dd class="col-sm-8">@Model.EventLocation</dd>
+
+                        <dt class="col-sm-4">Event Date</dt>
+                        <dd class="col-sm-8">@Model.EventDate</dd>
+
+                        <dt class="col-sm-4">Category ID</dt>
+                        <dd class="col-sm-8">@Model.CategoryID</dd>
+
+                        <dt class="col-sm-4">Organizer ID</dt>
+                        <dd class="col-sm-8">@Model.OrganizerID</dd>
+
+                    </dl>
+
+                    <hr />
+
+                    @* ACTION BUTTONS *@
+
+                    <div class="d-flex justify-content-between">
+
+                        <a asp-action="Index"
+                           class="btn btn-outline-secondary">
+                            Back to Events
+                        </a>
+
+                        @if (Context.Session.GetString("Role") == "Organizer")
+                        {
+                            <a asp-action="Edit"
+                               asp-route-id="@Model.eventId"
+                               class="btn btn-warning">
+                                Edit Event
+                            </a>
+                        }
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
-}
+
+</div>
