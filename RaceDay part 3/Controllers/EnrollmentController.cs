@@ -71,34 +71,54 @@ namespace RaceDay_part_3.Controllers
         // LOAD EVENTS FOR DROPDOWNS
         // ==========================================
 
+        // ==========================================
+        // LOAD EVENTS FOR DROPDOWNS
+        // ==========================================
+
         private async Task LoadEvents(
             string token,
             int? selectedEventId = null)
         {
+            // Always initialise the dropdown.
+            ViewBag.Events = new List<SelectListItem>();
+
             var response = await _apiService.GetEventsAsync(token);
 
             if (!response.IsSuccessStatusCode)
             {
-                ViewBag.Events = new List<SelectListItem>();
-
                 TempData["Error"] = "Unable to load available events.";
                 return;
             }
 
             var json = await response.Content.ReadAsStringAsync();
 
-            var events =
-                JsonSerializer.Deserialize<List<EventViewModel>>(
-                    json,
-                    _jsonOptions
-                ) ?? new List<EventViewModel>();
+            var events = JsonSerializer.Deserialize<List<EventViewModel>>(
+                json,
+                _jsonOptions
+            ) ?? new List<EventViewModel>();
 
-            ViewBag.Events = new SelectList(
-                events,
-                "EventID",
-                "EventName",
-                selectedEventId
-            );
+            var eventOptions = new List<SelectListItem>();
+
+            foreach (var item in events)
+            {
+                // Ignore null entries.
+                if (item == null)
+                    continue;
+
+                eventOptions.Add(new SelectListItem
+                {
+                    Value = item.eventId.ToString(),
+
+                    Text = string.IsNullOrWhiteSpace(item.EventName)
+                        ? $"Event {item.eventId}"
+                        : item.EventName,
+
+                    Selected = selectedEventId.HasValue &&
+                               item.eventId == selectedEventId.Value
+                });
+            }
+
+            ViewBag.Events = eventOptions;
         }
 
         // ==========================================
