@@ -1,76 +1,204 @@
 ﻿@{
     ViewData["Title"] = "Organizer Dashboard";
+
+    var userName = Context.Session.GetString("UserName");
 }
 
-<div class="container mt-5">
+<section class="dashboard-page">
 
-    <div class="card shadow p-4">
+    <div class="dashboard-welcome card p-4 mb-4">
 
-        <h1>Organizer Dashboard</h1>
+        <div class="row align-items-center">
 
-        <h4>Welcome, @Context.Session.GetString("UserName")!</h4>
+            <div class="col-md-8">
 
-        <p>
-            Welcome to your RaceDay Organizer Dashboard.
-            Manage your events and keep track of your activities.
-        </p>
+                <span class="badge bg-primary mb-2">
+                    ORGANIZER PORTAL
+                </span>
 
-        <hr />
+                <h1>Welcome, @userName!</h1>
 
-        <h5>Organizer Menu</h5>
+                <p class="mb-0">
+                    Manage your sporting events,
+                    organize participants and monitor competition results.
+                </p>
 
-        <div class="row mt-4">
-
-            <div class="col-md-4 mb-3">
-                <div class="card p-3">
-                    <h5>Manage Events</h5>
-                    <p>Create, update and manage events.</p>
-                    <a asp-controller="Event"
-                       asp-action="Index"
-                       class="btn btn-primary">
-                        Manage Events
-                    </a>
-                </div>
             </div>
 
-            <div class="col-md-4 mb-3">
-                <div class="card p-3">
-                    <h5>Manage Categories</h5>
-                    <p>View and manage event categories.</p>
-                    <a asp-controller="Category"
-                       asp-action="Index"
-                       class="btn btn-primary">
-                        Manage Categories
-                    </a>
-                </div>
-            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
 
-            <div class="col-md-4 mb-3">
-                <div class="card p-3">
-                    <h5>View Results</h5>
-                    <p>View event results.</p>
-                    <a asp-controller="Result"
-                       asp-action="Index"
-                       class="btn btn-primary">
-                        Manage Results
-                    </a>
-                </div>
+                <span class="display-3"
+                      aria-hidden="true">
+                    🏆
+                </span>
+
             </div>
 
         </div>
 
-        <form asp-controller="Organizer"
-              asp-action="Logout"
-              method="post">
+    </div>
 
-            <button type="submit" class="btn btn-danger">
-                Logout
-            </button>
 
-        </form>
+    <div class="mb-4">
+
+        <h2>Organizer Dashboard</h2>
+
+        <p class="text-muted">
+            Manage your RaceDay platform activities from one place.
+        </p>
 
     </div>
 
 
+    <div class="row g-4">
 
-</div>
+        <!-- MANAGE EVENTS -->
+
+        <div class="col-lg-4 col-md-6">
+
+            <div class="card dashboard-card h-100 p-3">
+
+                <div class="card-body d-flex flex-column">
+
+                    <span class="display-5 mb-3"
+                          aria-hidden="true">
+                        🏁
+                    </span>
+
+                    <h3 class="card-title h5">
+                        Manage Events
+                    </h3>
+
+                    <p class="card-text">
+                        Create new sporting events,
+                        update existing events and manage event details.
+                    </p>
+
+                    <a asp-controller="Event"
+                       asp-action="Index"
+                       class="btn btn-primary mt-auto">
+
+                        Manage Events
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- MANAGE CATEGORIES -->
+
+        <div class="col-lg-4 col-md-6">
+
+            <div class="card dashboard-card h-100 p-3">
+
+                <div class="card-body d-flex flex-column">
+
+                    <span class="display-5 mb-3"
+                          aria-hidden="true">
+                        📂
+                    </span>
+
+                    <h3 class="card-title h5">
+                        Manage Categories
+                    </h3>
+
+                    <p class="card-text">
+                        Organize sporting event categories
+                        and maintain your event classifications.
+                    </p>
+
+                    <a asp-controller="Category"
+                       asp-action="Index"
+                       class="btn btn-primary mt-auto">
+
+                        Manage Categories
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- MANAGE RESULTS -->
+
+        <div class="col-lg-4 col-md-6">
+
+            <div class="card dashboard-card h-100 p-3">
+
+                <div class="card-body d-flex flex-column">
+
+                    <span class="display-5 mb-3"
+                          aria-hidden="true">
+                        🥇
+                    </span>
+
+                    <h3 class="card-title h5">
+                        Manage Results
+                    </h3>
+
+                    <p class="card-text">
+                        Create, update and manage participant
+                        results for sporting events.
+                    </p>
+
+                    <a asp-controller="Result"
+                       asp-action="Index"
+                       class="btn btn-accent mt-auto">
+
+                        Manage Results
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- MANAGE ENROLLMENTS -->
+
+        <div class="col-lg-4 col-md-6">
+
+            <div class="card dashboard-card h-100 p-3">
+
+                <div class="card-body d-flex flex-column">
+
+                    <span class="display-5 mb-3"
+                          aria-hidden="true">
+                        📋
+                    </span>
+
+                    <h3 class="card-title h5">
+                        Manage Enrollments
+                    </h3>
+
+                    <p class="card-text">
+                        Review participant registrations
+                        and manage event enrollments.
+                    </p>
+
+                    <a asp-controller="Enrollment"
+                       asp-action="Index"
+                       class="btn btn-primary mt-auto">
+
+                        Manage Enrollments
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>

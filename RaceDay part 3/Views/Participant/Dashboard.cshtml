@@ -1,98 +1,168 @@
 ﻿@{
     ViewData["Title"] = "Participant Dashboard";
+
+    var userName = Context.Session.GetString("UserName");
 }
 
-<div class="container mt-5">
+<section class="dashboard-page">
 
-    <div class="card shadow p-4">
+    <div class="dashboard-welcome card p-4 mb-4">
 
-        <h1>Participant Dashboard</h1>
+        <div class="row align-items-center">
 
-        <h4>Welcome, @Context.Session.GetString("UserName")!</h4>
+            <div class="col-md-8">
 
-        <p>
-            Welcome to RaceDay!
-            Discover events, manage your registrations
-            and keep track of your results.
-        </p>
+                <span class="badge bg-primary mb-2">
+                    PARTICIPANT PORTAL
+                </span>
 
-        <hr />
+                <h1>Welcome, @userName!</h1>
 
-        <h5>Participant Menu</h5>
+                <p class="mb-0">
+                    Your RaceDay journey starts here.
+                    Discover sporting events, manage your registrations
+                    and follow your performance.
+                </p>
 
-        <div class="row mt-4">
-
-            <!-- BROWSE EVENTS -->
-            <div class="col-md-4 mb-3">
-                <div class="card p-3 h-100">
-
-                    <h5>Browse Events</h5>
-
-                    <p>Discover available events and find something to participate in.</p>
-
-                    <a asp-controller="Event"
-                       asp-action="Index"
-                       class="btn btn-primary">
-                        Browse Events
-                    </a>
-
-                </div>
             </div>
 
-            <!-- MY REGISTRATIONS -->
-            <div class="col-md-4 mb-3">
-                <div class="card p-3 h-100">
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
 
-                    <h5>My Registrations</h5>
+                <span class="display-3"
+                      aria-hidden="true">
+                    🏃
+                </span>
 
-                    <p>View your registered events and manage your enrollments.</p>
-
-                    <a asp-controller="Enrollment"
-                       asp-action="Index"
-                       class="btn btn-primary">
-                        My Registrations
-                    </a>
-
-                </div>
-            </div>
-
-            <!-- MY RESULTS -->
-            <div class="col-md-4 mb-3">
-                <div class="card p-3 h-100">
-
-                    <h5>My Results</h5>
-
-                    <p>Track your performance and results from completed events.</p>
-
-                    <a asp-controller="Result"
-                       asp-action="Index"
-                       class="btn btn-secondary">
-                        My Results
-                    </a>
-
-                    <small class="text-muted mt-2">
-                        Results section coming soon.
-                    </small>
-
-                </div>
             </div>
 
         </div>
 
-        <hr />
+    </div>
 
-        <form asp-controller="Participant"
-              asp-action="Logout"
-              method="post">
 
-            @Html.AntiForgeryToken()
+    <div class="mb-4">
 
-            <button type="submit" class="btn btn-danger">
-                Logout
-            </button>
+        <h2>Your Participant Dashboard</h2>
 
-        </form>
+        <p class="text-muted">
+            Select an option below to manage your sporting activities.
+        </p>
 
     </div>
 
-</div>
+
+    <div class="row g-4">
+
+        <!-- BROWSE EVENTS -->
+
+        <div class="col-lg-4 col-md-6">
+
+            <div class="card dashboard-card h-100 p-3">
+
+                <div class="card-body d-flex flex-column">
+
+                    <span class="display-5 mb-3"
+                          aria-hidden="true">
+                        🏁
+                    </span>
+
+                    <h3 class="card-title h5">
+                        Browse Events
+                    </h3>
+
+                    <p class="card-text">
+                        Explore available sporting events
+                        and find your next challenge.
+                    </p>
+
+                    <a asp-controller="Event"
+                       asp-action="Index"
+                       class="btn btn-primary mt-auto">
+
+                        Explore Events
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- MY REGISTRATIONS -->
+
+        <div class="col-lg-4 col-md-6">
+
+            <div class="card dashboard-card h-100 p-3">
+
+                <div class="card-body d-flex flex-column">
+
+                    <span class="display-5 mb-3"
+                          aria-hidden="true">
+                        📋
+                    </span>
+
+                    <h3 class="card-title h5">
+                        My Registrations
+                    </h3>
+
+                    <p class="card-text">
+                        View your event registrations
+                        and keep track of your participation.
+                    </p>
+
+                    <a asp-controller="Enrollment"
+                       asp-action="Index"
+                       class="btn btn-primary mt-auto">
+
+                        View Registrations
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- MY RESULTS -->
+
+        <div class="col-lg-4 col-md-6">
+
+            <div class="card dashboard-card h-100 p-3">
+
+                <div class="card-body d-flex flex-column">
+
+                    <span class="display-5 mb-3"
+                          aria-hidden="true">
+                        🏆
+                    </span>
+
+                    <h3 class="card-title h5">
+                        My Results
+                    </h3>
+
+                    <p class="card-text">
+                        Track your results and review
+                        your performance in completed events.
+                    </p>
+
+                    <a asp-controller="Result"
+                       asp-action="Index"
+                       class="btn btn-accent mt-auto">
+
+                        View My Results
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
