@@ -15,18 +15,16 @@ namespace RaceDay_part_3.Controllers
         }
 
         // GET USER ID - SUPPORTS STRING AND INTEGER SESSION VALUES
+        // GET PARTICIPANT ID FROM SESSION
         private int? GetUserId()
         {
-            int? userId = HttpContext.Session.GetInt32("UserId");
-
-            if (userId.HasValue)
-                return userId.Value;
-
             string? userIdString =
                 HttpContext.Session.GetString("UserId");
 
-            if (int.TryParse(userIdString, out int parsedId))
-                return parsedId;
+            if (int.TryParse(userIdString, out int participantId))
+            {
+                return participantId;
+            }
 
             return null;
         }
