@@ -57,23 +57,26 @@ namespace RaceDay_part_3.Controllers
         public async Task<IActionResult> Index()
         {
             if (!IsLoggedIn())
-                return RedirectToAction("Login", "Home");
+                return RedirectToAction("Login", "Participant");
 
             string token = GetToken();
 
             var response = await _apiService.GetResultsAsync(token);
 
+            Console.WriteLine("========== RESULTS DEBUG ==========");
+            Console.WriteLine($"API STATUS: {response.StatusCode}");
+
             if (!response.IsSuccessStatusCode)
             {
+                Console.WriteLine("API FAILED TO RETURN RESULTS.");
+
                 TempData["Error"] = "Unable to retrieve results.";
                 return View(new List<ResultViewModel>());
             }
 
             var apiResponse = await response.Content.ReadAsStringAsync();
 
-            Console.WriteLine("========== RESULTS API DEBUG ==========");
-            Console.WriteLine("API RESPONSE:");
-            Console.WriteLine(apiResponse);
+            Console.WriteLine($"RAW API RESPONSE: {apiResponse}");
 
             var results =
                 JsonSerializer.Deserialize<List<ResultViewModel>>(
@@ -88,18 +91,17 @@ namespace RaceDay_part_3.Controllers
             foreach (var result in results)
             {
                 Console.WriteLine(
-                    $"ResultID: {result.ResultID}, " +
-                    $"ParticipantID: {result.ParticipantID}, " +
-                    $"Position: {result.Position}, " +
-                    $"Score: {result.Score}");
+                    $"Result ID: {result.ResultID} | " +
+                    $"Participant ID: {result.ParticipantID}");
             }
 
-            Console.WriteLine("=======================================");
+            Console.WriteLine($"SESSION ROLE: {HttpContext.Session.GetString("Role")}");
 
-            // PARTICIPANTS CAN ONLY SEE THEIR OWN RESULTS
             if (!IsOrganizer())
             {
                 int? participantId = GetUserId();
+
+                Console.WriteLine($"LOGGED-IN PARTICIPANT ID: {participantId}");
 
                 if (participantId == null)
                     return RedirectToAction("Login", "Participant");
@@ -107,7 +109,12 @@ namespace RaceDay_part_3.Controllers
                 results = results
                     .Where(r => r.ParticipantID == participantId)
                     .ToList();
+
+                Console.WriteLine($"MATCHING RESULTS: {results.Count}");
             }
+
+            Console.WriteLine($"FINAL RESULTS SENT TO VIEW: {results.Count}");
+            Console.WriteLine("====================================");
 
             return View(results);
         }
