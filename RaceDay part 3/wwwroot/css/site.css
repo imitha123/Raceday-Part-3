@@ -1,33 +1,27 @@
-/* ==========================================
-   RACEDAY DESIGN SYSTEM
-========================================== */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Montserrat:wght@500;600;700;800;900&display=swap');
 
 :root {
-    --primary: #101f35;
-    --primary-light: #1b3454;
-    --secondary: #1769aa;
-    --secondary-dark: #125487;
-    --accent: #ff8c32;
-    --accent-dark: #e8751c;
-    --background: #f3f6fa;
-    --surface: #ffffff;
-    --text-primary: #172b43;
-    --text-secondary: #596b80;
-    --success: #198754;
-    --danger: #c62828;
-    --warning: #b76e00;
-    --border: #dce4ed;
-    --shadow: 0 4px 15px rgba(16, 31, 53, 0.08);
-    --radius: 12px;
+    --rd-navy: #101827;
+    --rd-dark: #17243A;
+    --rd-orange: #FF6B35;
+    --rd-orange-hover: #E95825;
+    --rd-blue: #2563EB;
+    --rd-background: #F4F6FA;
+    --rd-white: #FFFFFF;
+    --rd-text: #1B2638;
+    --rd-muted: #64748B;
+    --rd-border: #E2E8F0;
+    --rd-green: #16A36A;
+    --rd-red: #DC3545;
+    --rd-radius: 16px;
+    --rd-shadow: 0 8px 28px rgba(16, 24, 39, 0.07);
 }
 
-
-/* ==========================================
-   GLOBAL
-========================================== */
+* {
+    box-sizing: border-box;
+}
 
 html {
-    font-size: 16px;
     min-height: 100%;
     scroll-behavior: smooth;
 }
@@ -37,343 +31,481 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: var(--background);
-    color: var(--text-primary);
-    line-height: 1.6;
+    background: var(--rd-background);
+    color: var(--rd-text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    color: var(--rd-navy);
+}
+
+a {
+    text-decoration: none;
 }
 
 .main-content {
     flex: 1;
+    padding-bottom: 60px;
 }
 
-
-/* ==========================================
-   ACCESSIBILITY
-========================================== */
+/* Accessibility */
 
 .skip-link {
     position: absolute;
     top: -100px;
-    left: 10px;
+    left: 12px;
     z-index: 2000;
     padding: 12px 18px;
-    background: var(--accent);
-    color: #172b43;
-    font-weight: bold;
-    border-radius: 6px;
+    background: var(--rd-orange);
+    color: white;
+    border-radius: 8px;
 }
 
     .skip-link:focus {
-        top: 10px;
+        top: 12px;
     }
 
-a:focus-visible,
-button:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible {
-    outline: 3px solid var(--accent) !important;
+:focus-visible {
+    outline: 3px solid var(--rd-orange) !important;
     outline-offset: 3px;
 }
 
-.text-muted {
-    color: var(--text-secondary) !important;
+/* Navigation */
+
+.raceday-navbar {
+    background: var(--rd-navy);
+    padding: 17px 0;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.14);
 }
 
-
-/* ==========================================
-   NAVIGATION
-========================================== */
-
-.race-navbar {
-    background: var(--primary);
-    padding: 14px 0;
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
-}
-
-.navbar-brand {
-    font-size: 1.55rem;
-    font-weight: 800;
-    letter-spacing: 0.5px;
+.raceday-brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
     color: white !important;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 23px;
+    font-weight: 900;
+    letter-spacing: -1px;
 }
 
 .brand-icon {
-    margin-right: 7px;
+    width: 39px;
+    height: 39px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--rd-orange);
+    color: white;
+    border-radius: 11px;
+    font-weight: 900;
 }
 
-.race-navbar .nav-link {
-    color: #e5edf7 !important;
+.brand-highlight {
+    color: var(--rd-orange);
+}
+
+.raceday-navbar .nav-link {
+    color: #CBD5E1 !important;
     font-weight: 600;
-    padding: 10px 13px !important;
-    transition: color 0.2s ease;
+    padding: 10px 14px !important;
+    transition: color .2s ease;
 }
 
-    .race-navbar .nav-link:hover {
-        color: var(--accent) !important;
+    .raceday-navbar .nav-link:hover {
+        color: white !important;
     }
 
+.btn-nav-primary,
 .btn-nav-logout {
-    background: var(--accent);
-    color: #172b43;
-    border: none;
-    padding: 8px 20px;
-    border-radius: 7px;
+    border-radius: 9px;
+    padding: 10px 20px;
     font-weight: 700;
 }
 
-    .btn-nav-logout:hover {
-        background: var(--accent-dark);
+.btn-nav-primary {
+    background: var(--rd-orange);
+    color: white;
+}
+
+    .btn-nav-primary:hover {
+        background: var(--rd-orange-hover);
         color: white;
     }
 
-
-/* ==========================================
-   HEADINGS
-========================================== */
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    color: var(--primary);
-    font-weight: 750;
+.btn-nav-logout {
+    background: rgba(255, 255, 255, .1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, .2);
 }
 
-h1 {
-    font-size: 2rem;
-}
+    .btn-nav-logout:hover {
+        background: var(--rd-orange);
+        color: white;
+    }
 
-h2 {
-    font-size: 1.65rem;
-}
-
-
-/* ==========================================
-   CARDS
-========================================== */
-
-.card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.dashboard-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 22px rgba(16, 31, 53, 0.13);
-}
-
-.card-title {
-    color: var(--primary);
-    font-weight: 750;
-}
-
-.card-text {
-    color: var(--text-secondary);
-}
-
-
-/* ==========================================
-   BUTTONS
-========================================== */
+/* Buttons */
 
 .btn {
-    border-radius: 7px;
-    font-weight: 650;
-    padding: 9px 17px;
-    transition: all 0.2s ease;
+    border-radius: 9px;
+    font-weight: 700;
+    padding: 10px 18px;
+    transition: all .2s ease;
 }
 
-.btn-primary {
-    background: var(--secondary);
-    border-color: var(--secondary);
-}
-
-    .btn-primary:hover {
-        background: var(--secondary-dark);
-        border-color: var(--secondary-dark);
+    .btn:hover {
+        transform: translateY(-2px);
     }
 
-.btn-secondary {
-    background: var(--primary-light);
-    border-color: var(--primary-light);
+.btn-primary {
+    background: var(--rd-orange);
+    border-color: var(--rd-orange);
 }
 
-.btn-accent {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #172b43;
+    .btn-primary:hover,
+    .btn-primary:focus {
+        background: var(--rd-orange-hover);
+        border-color: var(--rd-orange-hover);
+    }
+
+.btn-success {
+    background: var(--rd-green);
+    border-color: var(--rd-green);
 }
 
-    .btn-accent:hover {
-        background: var(--accent-dark);
+.btn-info {
+    background: var(--rd-blue);
+    border-color: var(--rd-blue);
+    color: white;
+}
+
+    .btn-info:hover {
+        background: #1D4ED8;
         color: white;
     }
 
+.btn-warning {
+    background: #F59E0B;
+    border-color: #F59E0B;
+    color: #17243A;
+}
+
 .btn-danger {
-    background: var(--danger);
-    border-color: var(--danger);
+    background: var(--rd-red);
+    border-color: var(--rd-red);
 }
 
-.btn-success {
-    background: var(--success);
-    border-color: var(--success);
+/* Cards */
+
+.card,
+.dashboard-card,
+.auth-card {
+    background: var(--rd-white);
+    border: 1px solid var(--rd-border);
+    border-radius: var(--rd-radius);
+    box-shadow: var(--rd-shadow);
 }
 
+.card {
+    overflow: hidden;
+}
 
-/* ==========================================
-   FORMS
-========================================== */
+.card-header {
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--rd-border);
+}
+
+.card-body {
+    padding: 24px;
+}
+
+.dashboard-card {
+    padding: 28px;
+    height: 100%;
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 14px 34px rgba(16, 24, 39, .12);
+    }
+
+/* Forms */
 
 .form-label {
-    font-weight: 650;
-    color: var(--primary);
+    font-weight: 700;
+    color: var(--rd-text);
+    margin-bottom: 8px;
 }
 
 .form-control,
 .form-select {
-    border: 1px solid #bdc9d7;
-    border-radius: 7px;
-    padding: 10px 12px;
+    min-height: 47px;
+    border: 1px solid #CBD5E1;
+    border-radius: 9px;
+    padding: 11px 14px;
+    background-color: white;
 }
 
     .form-control:focus,
     .form-select:focus {
-        border-color: var(--secondary);
-        box-shadow: 0 0 0 0.2rem rgba(23, 105, 170, 0.18);
+        border-color: var(--rd-orange);
+        box-shadow: 0 0 0 3px rgba(255, 107, 53, .15);
     }
+
+.input-validation-error {
+    border-color: var(--rd-red);
+}
 
 .field-validation-error,
-.text-danger {
-    color: var(--danger) !important;
-}
-
 .validation-summary-errors {
-    color: var(--danger);
-    background: #fff0f0;
-    border: 1px solid #f2c4c4;
-    padding: 12px;
-    border-radius: 7px;
-    margin-bottom: 15px;
+    color: var(--rd-red);
+    font-size: 13px;
+    font-weight: 600;
 }
 
+.validation-summary-valid {
+    display: none;
+}
 
-/* ==========================================
-   TABLES
-========================================== */
+/* Tables */
+
+.table-responsive {
+    border-radius: 12px;
+}
 
 .table {
-    background: var(--surface);
     vertical-align: middle;
+    margin-bottom: 0;
 }
 
-    .table thead {
-        background: var(--primary);
+    .table thead th {
+        background: var(--rd-dark);
         color: white;
+        padding: 16px;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: .6px;
+        border: none;
+        white-space: nowrap;
     }
 
-        .table thead th {
-            background: var(--primary);
-            color: white;
-            padding: 13px;
-        }
-
     .table tbody td {
-        padding: 12px;
+        padding: 16px;
+        border-color: var(--rd-border);
     }
 
     .table tbody tr:hover {
-        background: #f0f6fc;
+        background: #F8FAFC;
     }
 
-
-/* ==========================================
-   ALERTS
-========================================== */
-
-.alert {
-    border-radius: 8px;
-    padding: 13px 17px;
-    font-weight: 550;
-}
-
-.alert-success {
-    color: #145c37;
-}
-
-.alert-danger {
-    color: #842029;
-}
-
-
-/* ==========================================
-   STATUS BADGES
-========================================== */
+/* Status badges */
 
 .status-badge {
-    display: inline-block;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 750;
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 12px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
 }
 
 .status-confirmed {
-    background: #d1e7dd;
-    color: #0f5132;
+    color: #087443;
+    background: #D9FBE9;
 }
 
 .status-pending {
-    background: #f8d7da;
-    color: #842029;
+    color: #A61B29;
+    background: #FEE2E2;
 }
 
+/* Alerts */
 
-/* ==========================================
-   FOOTER
-========================================== */
-
-.race-footer {
-    background: var(--primary);
-    color: #e5edf7;
-    padding: 22px 0;
-    margin-top: 35px;
+.raceday-alert {
+    border: none;
+    border-radius: 10px;
+    padding: 15px 18px;
+    font-weight: 600;
 }
 
-    .race-footer small {
-        color: #c2d0df;
+/* Page headings */
+
+.page-heading {
+    margin: 38px 0 28px;
+}
+
+    .page-heading h1,
+    .page-heading h2 {
+        margin-bottom: 8px;
     }
 
-
-/* ==========================================
-   RESPONSIVE DESIGN
-========================================== */
-
-@media (max-width: 767px) {
-
-    h1 {
-        font-size: 1.65rem;
+    .page-heading p {
+        color: var(--rd-muted);
+        margin: 0;
     }
 
-    h2 {
-        font-size: 1.4rem;
+/* Authentication */
+
+.auth-section {
+    padding: 65px 0;
+}
+
+.auth-card {
+    overflow: hidden;
+}
+
+.auth-banner {
+    background: linear-gradient(135deg, rgba(16, 24, 39, .97), rgba(23, 36, 58, .92)), radial-gradient(circle at top right, rgba(255, 107, 53, .4), transparent 60%);
+    padding: 42px;
+    color: white;
+}
+
+    .auth-banner h1,
+    .auth-banner h2 {
+        color: white;
     }
 
-    .race-navbar {
-        padding: 10px 0;
+    .auth-banner .accent {
+        color: var(--rd-orange);
     }
 
-        .race-navbar .nav-link {
-            padding: 10px 5px !important;
+.auth-form {
+    padding: 42px;
+}
+
+/* Home page */
+
+.hero-section {
+    position: relative;
+    overflow: hidden;
+    padding: 100px 0;
+    background: radial-gradient(circle at 85% 20%, rgba(255, 107, 53, .25), transparent 28%), linear-gradient(120deg, #101827, #172B48);
+    color: white;
+}
+
+    .hero-section h1 {
+        color: white;
+        font-size: clamp(42px, 6vw, 76px);
+        line-height: 1.05;
+        letter-spacing: -3px;
+    }
+
+        .hero-section h1 span {
+            color: var(--rd-orange);
         }
 
-    .table-responsive {
-        overflow-x: auto;
+    .hero-section p {
+        color: #CBD5E1;
+        font-size: 18px;
+        max-width: 580px;
+        line-height: 1.8;
+    }
+
+.hero-label {
+    display: inline-block;
+    color: #FFB18E;
+    background: rgba(255, 107, 53, .12);
+    border: 1px solid rgba(255, 107, 53, .35);
+    padding: 8px 14px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 22px;
+}
+
+.hero-panel {
+    border: 1px solid rgba(255, 255, 255, .15);
+    border-radius: 20px;
+    padding: 32px;
+    background: rgba(255, 255, 255, .07);
+    backdrop-filter: blur(10px);
+}
+
+.hero-stat {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 42px;
+    font-weight: 900;
+    color: var(--rd-orange);
+}
+
+.hero-panel p {
+    font-size: 14px;
+    margin-bottom: 0;
+}
+
+/* Footer */
+
+.raceday-footer {
+    background: var(--rd-navy);
+    color: #94A3B8;
+    padding: 32px 0;
+    margin-top: auto;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.raceday-footer h4 {
+    color: white;
+    margin-bottom: 5px;
+}
+
+    .raceday-footer h4 span {
+        color: var(--rd-orange);
+    }
+
+.raceday-footer p {
+    margin: 0;
+    font-size: 13px;
+}
+
+.footer-right {
+    font-size: 13px;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 65px 0;
+    }
+
+        .hero-section h1 {
+            letter-spacing: -1px;
+        }
+
+    .auth-form,
+    .auth-banner {
+        padding: 28px;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .dashboard-card {
+        padding: 22px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
     }
 }

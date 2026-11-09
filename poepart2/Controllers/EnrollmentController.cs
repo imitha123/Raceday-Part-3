@@ -24,8 +24,8 @@ namespace poepart2.Controllers
                 connection.Open();
 
                 string query = @"
-                SELECT EventID, ParticipantID
-                FROM Enrollment";
+SELECT EventID, ParticipantID, Status
+FROM Enrollment";
 
                 using SqlCommand command = new SqlCommand(query, connection);
                 using SqlDataReader reader = command.ExecuteReader();
@@ -37,7 +37,8 @@ namespace poepart2.Controllers
                     enrollments.Add(new
                     {
                         EventID = reader.GetInt32(0),
-                        ParticipantID = reader.GetInt32(1)
+                        ParticipantID = reader.GetInt32(1),
+                        Status = reader.GetString(2)
                     });
                 }
 
@@ -78,10 +79,10 @@ namespace poepart2.Controllers
                 connection.Open();
 
                 string query = @"
-                SELECT EventID, ParticipantID
-                FROM Enrollment
-                WHERE EventID = @eventId
-                AND ParticipantID = @participantId";
+SELECT EventID, ParticipantID, Status
+FROM Enrollment
+WHERE EventID = @eventId
+AND ParticipantID = @participantId";
 
                 using SqlCommand command = new SqlCommand(query, connection);
 
@@ -101,7 +102,8 @@ namespace poepart2.Controllers
                 var enrollment = new
                 {
                     EventID = reader.GetInt32(0),
-                    ParticipantID = reader.GetInt32(1)
+                    ParticipantID = reader.GetInt32(1),
+                    Status = reader.GetString(2)
                 };
 
                 return Ok(enrollment);
@@ -227,12 +229,13 @@ namespace poepart2.Controllers
                     return CreatedAtAction(
                         nameof(GetEnrollment),
                         new { eventId, participantId },
-                        new
-                        {
-                            EventID = eventId,
-                            ParticipantID = participantId,
-                            Message = "Enrollment added successfully."
-                        });
+                       new
+                       {
+                           EventID = eventId,
+                           ParticipantID = participantId,
+                           Status = "Pending",
+                           Message = "Enrollment added successfully."
+                       });
                 }
 
                 return StatusCode(500, new
@@ -476,6 +479,93 @@ namespace poepart2.Controllers
                 return StatusCode(500, new
                 {
                     message = "An unexpected error occurred while deleting the enrollment."
+                });
+            }
+        }
+        // PUT: api/Enrollment/1/2/status?status=Confirmed
+        // Update enrollment status
+        [HttpPut("{eventId:int}/{participantId:int}/status")]
+        public IActionResult UpdateEnrollmentStatus(
+            int eventId,
+            int participantId,
+            [FromQuery] string status)
+        {
+            if (eventId <= 0 || participantId <= 0)
+            {
+                return BadRequest(new
+                {
+                    message = "Invalid event or participant ID."
+                });
+            }
+
+            if (string.IsNullOrWhiteSpace(status))
+            {
+                return BadRequest(new
+                {
+                    message = "Enrollment status is required."
+                });
+            }
+
+            status = status.Trim();
+
+            if (status != "Pending" && status != "Confirmed")
+            {
+                return BadRequest(new
+                {
+                    message = "Status must be Pending or Confirmed."
+                });
+            }
+
+            try
+            {
+                using SqlConnection connection =
+                    new SqlConnection(connectionString);
+
+                connection.Open();
+
+                string query = @"
+            UPDATE Enrollment
+            SET Status = @status
+            WHERE EventID = @eventId
+            AND ParticipantID = @participantId";
+
+                using SqlCommand command =
+                    new SqlCommand(query, connection);
+
+                command.Parameters.AddWithValue("@status", status);
+                command.Parameters.AddWithValue("@eventId", eventId);
+                command.Parameters.AddWithValue("@participantId", participantId);
+
+                int rowsAffected = command.ExecuteNonQuery();
+
+                if (rowsAffected == 0)
+                {
+                    return NotFound(new
+                    {
+                        message = "Enrollment not found."
+                    });
+                }
+
+                return Ok(new
+                {
+                    EventID = eventId,
+                    ParticipantID = participantId,
+                    Status = status,
+                    Message = "Enrollment status updated successfully."
+                });
+            }
+            catch (SqlException)
+            {
+                return StatusCode(500, new
+                {
+                    message = "A database error occurred while updating enrollment status."
+                });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new
+                {
+                    message = "An unexpected error occurred."
                 });
             }
         }

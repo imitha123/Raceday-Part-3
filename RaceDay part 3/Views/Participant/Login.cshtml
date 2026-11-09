@@ -4,89 +4,129 @@
     ViewData["Title"] = "Participant Login";
 }
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-5">
+<section class="auth-section">
 
-            <div class="card shadow p-4">
+    <div class="container">
 
-                <h2 class="text-center mb-4">
-                    Participant Login
-                </h2>
+        <div class="row justify-content-center">
 
-                @if (ViewBag.Error != null)
-                {
-                    <div class="alert alert-danger">
-                        @ViewBag.Error
+            <div class="col-lg-9 col-xl-8">
+
+                <div class="auth-card">
+
+                    <div class="row g-0">
+
+                        <div class="col-md-5 auth-banner d-flex flex-column justify-content-center">
+
+                            <span class="hero-label">
+                                YOUR NEXT CHALLENGE
+                            </span>
+
+                            <h2>
+                                FIND YOUR
+                                <span class="accent">FINISH LINE.</span>
+                            </h2>
+
+                            <p class="mt-3">
+                                Discover events, compete,
+                                and track your achievements.
+                            </p>
+
+                        </div>
+
+                        <div class="col-md-7 auth-form">
+
+                            <h2>Welcome Back</h2>
+
+                            <p class="text-muted mb-4">
+                                Sign in to your participant account.
+                            </p>
+
+                            @if (ViewBag.Error != null)
+                            {
+                                <div class="alert alert-danger raceday-alert"
+                                     role="alert">
+                                    @ViewBag.Error
+                                </div>
+                            }
+
+                            <form asp-action="Login" method="post">
+
+                                @Html.AntiForgeryToken()
+
+                                <div asp-validation-summary="ModelOnly"
+                                     class="validation-summary-errors mb-3">
+                                </div>
+
+                                <div class="mb-3">
+
+                                    <label asp-for="Email"
+                                           class="form-label">
+                                        Email Address
+                                    </label>
+
+                                    <input asp-for="Email"
+                                           class="form-control"
+                                           placeholder="you@example.com"
+                                           autocomplete="email" />
+
+                                    <span asp-validation-for="Email"></span>
+
+                                </div>
+
+                                <div class="mb-4">
+
+                                    <label asp-for="Password"
+                                           class="form-label">
+                                        Password
+                                    </label>
+
+                                    <input asp-for="Password"
+                                           type="password"
+                                           class="form-control"
+                                           placeholder="Enter your password"
+                                           autocomplete="current-password" />
+
+                                    <span asp-validation-for="Password"></span>
+
+                                </div>
+
+                                <button type="submit"
+                                        class="btn btn-primary w-100">
+
+                                    Sign In to RaceDay
+                                </button>
+
+                            </form>
+
+                            <div class="text-center mt-4">
+
+                                <p class="text-muted mb-0">
+                                    Don't have an account?
+                                    <a asp-action="Register"
+                                       class="fw-bold">
+                                        Join RaceDay
+                                    </a>
+                                </p>
+
+                            </div>
+
+                        </div>
+
                     </div>
-                }
 
-                <form asp-controller="Participant"
-                      asp-action="Login"
-                      method="post">
-
-                    <div asp-validation-summary="ModelOnly"
-                         class="text-danger mb-3">
-                    </div>
-
-                    <div class="mb-3">
-                        <label asp-for="Email"
-                               class="form-label">
-                            Email Address
-                        </label>
-
-                        <input asp-for="Email"
-                               class="form-control"
-                               placeholder="Enter your email" />
-
-                        <span asp-validation-for="Email"
-                              class="text-danger">
-                        </span>
-                    </div>
-
-                    <div class="mb-3">
-                        <label asp-for="Password"
-                               class="form-label">
-                            Password
-                        </label>
-
-                        <input asp-for="Password"
-                               type="password"
-                               class="form-control"
-                               placeholder="Enter your password" />
-
-                        <span asp-validation-for="Password"
-                              class="text-danger">
-                        </span>
-                    </div>
-
-                    <button type="submit"
-                            class="btn btn-primary w-100">
-                        Login
-                    </button>
-
-                </form>
-
-                <div class="text-center mt-3">
-                    <p>
-                        Don't have an account?
-
-                        <a asp-controller="Participant"
-                           asp-action="Register">
-                            Register here
-                        </a>
-                    </p>
                 </div>
 
             </div>
 
         </div>
+
     </div>
-</div>
+
+</section>
 
 @section Scripts {
     @{
-        await Html.RenderPartialAsync(
-            "_ValidationScriptsPartial");
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }

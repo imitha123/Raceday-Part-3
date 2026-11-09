@@ -1,73 +1,210 @@
 ﻿@{
-    ViewData["Title"] = "Welcome to RaceDay";
+    ViewData["Title"] = "Welcome";
 }
 
-<div class="container mt-5">
+<section class="hero-section">
+
+    <div class="container">
+
+        <div class="row align-items-center g-5">
+
+            <div class="col-lg-7">
+
+                <span class="hero-label">
+                    YOUR NEXT CHALLENGE STARTS HERE
+                </span>
+
+                <h1>
+                    EVERY RACE HAS A
+                    <span>STORY.</span>
+                </h1>
+
+                <p class="mt-4">
+                    Discover sporting events, compete with others
+                    and track your performance. Whether you're
+                    organising the action or taking part,
+                    RaceDay brings everything together.
+                </p>
+
+                <div class="d-flex flex-wrap gap-3 mt-4">
+
+                    <a asp-controller="Participant"
+                       asp-action="Register"
+                       class="btn btn-primary btn-lg">
+
+                        Join the Action
+                    </a>
+
+                    <a asp-controller="Organizer"
+                       asp-action="Login"
+                       class="btn btn-outline-light btn-lg">
+
+                        Organizer Portal
+                    </a>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-5">
+
+                <div class="hero-panel">
+
+                    <div class="mb-4">
+
+                        <span class="hero-label">
+                            THE RACEDAY EXPERIENCE
+                        </span>
+
+                        <h2 class="text-white">
+                            READY.
+                            <span style="color:#FF6B35">SET.</span>
+                            GO.
+                        </h2>
+
+                    </div>
+
+                    <div class="row g-4">
+
+                        <div class="col-6">
+
+                            <div class="hero-stat">01</div>
+
+                            <p>Discover Events</p>
+
+                        </div>
+
+                        <div class="col-6">
+
+                            <div class="hero-stat">02</div>
+
+                            <p>Register to Compete</p>
+
+                        </div>
+
+                        <div class="col-6">
+
+                            <div class="hero-stat">03</div>
+
+                            <p>Track Results</p>
+
+                        </div>
+
+                        <div class="col-6">
+
+                            <div class="hero-stat">04</div>
+
+                            <p>Make Your Mark</p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<section class="container py-5">
 
     <div class="text-center mb-5">
 
-        <h1 class="display-3 fw-bold">
-            RACEDAY
-        </h1>
+        <span class="hero-label">
+            ONE PLATFORM. TWO EXPERIENCES.
+        </span>
 
-        <h3>Welcome to RaceDay Event Management</h3>
+        <h2>BUILT FOR THE PEOPLE BEHIND THE RACE.</h2>
 
-        <p class="lead">
-            Your platform for managing and participating
-            in exciting events.
+        <p class="text-muted">
+            Choose how you want to experience RaceDay.
         </p>
 
     </div>
 
-    <div class="row justify-content-center">
+    <div class="row g-4">
 
-        <div class="col-md-5 mb-4">
+        <div class="col-lg-6">
 
-            <div class="card shadow p-4 text-center">
+            <div class="dashboard-card">
 
-                <h2>Organizer</h2>
+                <div class="mb-3">
 
-                <p>
-                    Manage events, categories and results.
+                    <span class="hero-label">
+                        ORGANIZER
+                    </span>
+
+                </div>
+
+                <h3>Take control of the event.</h3>
+
+                <p class="text-muted">
+                    Manage sporting events, organise categories,
+                    oversee registrations and publish results.
                 </p>
 
-                <a asp-controller="Organizer"
-                   asp-action="Login"
-                   class="btn btn-primary mb-2">
-                    Organizer Login
-                </a>
+                <div class="d-flex flex-wrap gap-2 mt-4">
 
-                <a asp-controller="Organizer"
-                   asp-action="Register"
-                   class="btn btn-outline-primary">
-                    Create Organizer Account
-                </a>
+                    <a asp-controller="Organizer"
+                       asp-action="Login"
+                       class="btn btn-primary">
+
+                        Organizer Login
+                    </a>
+
+                    <a asp-controller="Organizer"
+                       asp-action="Register"
+                       class="btn btn-outline-dark">
+
+                        Create Account
+                    </a>
+
+                </div>
 
             </div>
 
         </div>
 
-        <div class="col-md-5 mb-4">
+        <div class="col-lg-6">
 
-            <div class="card shadow p-4 text-center">
+            <div class="dashboard-card">
 
-                <h2>Participant</h2>
+                <div class="mb-3">
 
-                <p>
-                    Discover events and manage your registrations.
+                    <span class="hero-label">
+                        PARTICIPANT
+                    </span>
+
+                </div>
+
+                <h3>Find your next challenge.</h3>
+
+                <p class="text-muted">
+                    Explore upcoming events, register to participate
+                    and keep track of your results.
                 </p>
 
-                <a asp-controller="Participant"
-                   asp-action="Login"
-                   class="btn btn-success mb-2">
-                    Participant Login
-                </a>
+                <div class="d-flex flex-wrap gap-2 mt-4">
 
-                <a asp-controller="Participant"
-                   asp-action="Register"
-                   class="btn btn-outline-success">
-                    Create Participant Account
-                </a>
+                    <a asp-controller="Participant"
+                       asp-action="Login"
+                       class="btn btn-primary">
+
+                        Participant Login
+                    </a>
+
+                    <a asp-controller="Participant"
+                       asp-action="Register"
+                       class="btn btn-outline-dark">
+
+                        Create Account
+                    </a>
+
+                </div>
 
             </div>
 
@@ -75,4 +212,4 @@
 
     </div>
 
-</div>
+</section>
