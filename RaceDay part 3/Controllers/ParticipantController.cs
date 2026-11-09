@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RaceDay_part_3.Services;
+using Microsoft.AspNetCore.Hosting;
+using System.Net.Http.Json;
+using System.IO;
 using RaceDay_part_3.ViewModels;
 using System.Text.Json;
 
@@ -9,9 +12,14 @@ namespace RaceDay_part_3.Controllers
     {
         private readonly ApiService _apiService;
 
-        public ParticipantController(ApiService apiService)
+        private readonly IWebHostEnvironment _environment;
+
+        public ParticipantController(
+     ApiService apiService,
+     IWebHostEnvironment environment)
         {
             _apiService = apiService;
+            _environment = environment;
         }
 
         // GET: Participant/Login
@@ -69,10 +77,12 @@ namespace RaceDay_part_3.Controllers
                 "UserId", GetValue("participantId"));
 
             HttpContext.Session.SetString(
-                "UserName", GetValue("participantName"));
+      "UserName",
+      GetValue("name") + " " + GetValue("surname"));
 
             HttpContext.Session.SetString(
-                "Email", GetValue("participantEmail"));
+                "Email",
+                GetValue("email"));
 
             HttpContext.Session.SetString(
                 "Role", "Participant");
@@ -134,6 +144,190 @@ namespace RaceDay_part_3.Controllers
             HttpContext.Session.Clear();
 
             return RedirectToAction("Index", "Home");
+        }
+
+        private async Task<string?> SaveProfileImageAsync(IFormFile? image)
+        {
+            if (image == null || image.Length == 0)
+            {
+                return null;
+            }
+
+            string[] allowedExtensions =
+            {
+        ".jpg", ".jpeg", ".png", ".webp"
+    };
+
+            string extension =
+                Path.GetExtension(image.FileName).ToLowerInvariant();
+
+            if (!allowedExtensions.Contains(extension))
+            {
+                throw new InvalidOperationException(
+                    "Only JPG, JPEG, PNG and WEBP images are allowed.");
+            }
+
+            if (image.Length > 5 * 1024 * 1024)
+            {
+                throw new InvalidOperationException(
+                    "Profile pictures cannot exceed 5 MB.");
+            }
+
+            string folder = Path.Combine(
+                _environment.WebRootPath,
+                "uploads",
+                "profile-pictures");
+
+            Directory.CreateDirectory(folder);
+
+            string fileName =
+                Guid.NewGuid().ToString() + extension;
+
+            string filePath = Path.Combine(folder, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await image.CopyToAsync(stream);
+            }
+
+            return "/uploads/profile-pictures/" + fileName;
+        }
+
+        // GET: Participant/Profile
+        public async Task<IActionResult> Profile()
+        {
+            if (HttpContext.Session.GetString("Role") != "Participant")
+            {
+                return RedirectToAction("Login");
+            }
+
+            string token = HttpContext.Session.GetString("Token")!;
+
+            var response =
+                await _apiService.GetParticipantProfileAsync(token);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                TempData["Error"] = "Unable to retrieve your profile.";
+                return RedirectToAction("Dashboard");
+            }
+
+            var profile =
+                await response.Content.ReadFromJsonAsync<ParticipantProfileViewModel>();
+
+            if (profile == null)
+            {
+                return RedirectToAction("Dashboard");
+            }
+
+            return View(profile);
+        }
+
+
+        // POST: Participant/Profile
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Profile(
+            ParticipantProfileViewModel model)
+        {
+            if (HttpContext.Session.GetString("Role") != "Participant")
+            {
+                return RedirectToAction("Login");
+            }
+
+            string token = HttpContext.Session.GetString("Token")!;
+
+            // Profile picture is optional
+            ModelState.Remove(nameof(model.ProfileImage));
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            string? oldImagePath = model.ProfileImagePath;
+            string? newImagePath = null;
+
+            try
+            {
+                if (model.ProfileImage != null)
+                {
+                    newImagePath =
+                        await SaveProfileImageAsync(model.ProfileImage);
+
+                    model.ProfileImagePath = newImagePath;
+                }
+
+                var response =
+                    await _apiService.UpdateParticipantProfileAsync(
+                        model, token);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    // Remove newly uploaded image if the API update fails
+                    if (newImagePath != null)
+                    {
+                        DeleteProfileImage(newImagePath);
+                    }
+
+                    ModelState.AddModelError(
+                        "",
+                        "Unable to update your profile. Please check your information.");
+
+                    model.ProfileImagePath = oldImagePath;
+
+                    return View(model);
+                }
+
+                // Remove previous picture after successful replacement
+                if (newImagePath != null && !string.IsNullOrEmpty(oldImagePath))
+                {
+                    DeleteProfileImage(oldImagePath);
+                }
+
+                HttpContext.Session.SetString(
+                    "UserName", model.ParticipantName + " " + model.ParticipantSurname);
+
+                HttpContext.Session.SetString("Email", model.Email);
+
+                TempData["Success"] = "Your profile has been updated successfully!";
+
+                HttpContext.Session.SetString(
+    "ProfileImagePath",
+    model.ProfileImagePath ?? "");
+
+                return RedirectToAction("Profile");
+            }
+            catch (InvalidOperationException ex)
+            {
+                ModelState.AddModelError(nameof(model.ProfileImage), ex.Message);
+                model.ProfileImagePath = oldImagePath;
+
+                return View(model);
+            }
+        }
+
+
+        // DELETE OLD PROFILE PICTURE
+        private void DeleteProfileImage(string? imagePath)
+        {
+            if (string.IsNullOrWhiteSpace(imagePath))
+            {
+                return;
+            }
+
+            string fileName = Path.GetFileName(imagePath);
+
+            string fullPath = Path.Combine(
+                _environment.WebRootPath,
+                "uploads",
+                "profile-pictures",
+                fileName);
+
+            if (System.IO.File.Exists(fullPath))
+            {
+                System.IO.File.Delete(fullPath);
+            }
         }
     }
 }

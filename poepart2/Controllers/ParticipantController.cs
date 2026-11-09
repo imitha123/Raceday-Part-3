@@ -505,6 +505,180 @@ namespace poepart2.Controllers
                 });
             }
         }
+
+        // GET: api/Participant/Profile
+        // Retrieve the logged-in participant's profile
+        [Authorize(Roles = "Participant")]
+        [HttpGet("Profile")]
+        public IActionResult GetParticipantProfile()
+        {
+            if (!TryGetParticipantId(out int participantId))
+            {
+                return Unauthorized();
+            }
+
+            try
+            {
+                using SqlConnection connection =
+                    new SqlConnection(connectionString);
+
+                connection.Open();
+
+                string query =
+                    "SELECT participantID, Participantname, " +
+                    "Participantsurname, Email, ProfileImagePath " +
+                    "FROM Participant WHERE participantID = @id";
+
+                using SqlCommand command =
+                    new SqlCommand(query, connection);
+
+                command.Parameters.AddWithValue("@id", participantId);
+
+                using SqlDataReader reader = command.ExecuteReader();
+
+                if (!reader.Read())
+                {
+                    return NotFound(new
+                    {
+                        message = "Participant not found."
+                    });
+                }
+
+                return Ok(new
+                {
+                    participantId = reader.GetInt32(0),
+                    participantName = reader.GetString(1).Trim(),
+                    participantSurname = reader.GetString(2).Trim(),
+                    email = reader.GetString(3).Trim(),
+                    profileImagePath = reader.IsDBNull(4)
+                        ? null
+                        : reader.GetString(4).Trim()
+                });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new
+                {
+                    message = "An error occurred while retrieving the profile."
+                });
+            }
+        }
+
+
+        // PUT: api/Participant/Profile
+        // Update the logged-in participant's personal information
+        [Authorize(Roles = "Participant")]
+        [HttpPut("Profile")]
+        public IActionResult UpdateParticipantProfile(
+            [FromBody] ParticipantProfileRequest request)
+        {
+            if (request == null)
+            {
+                return BadRequest();
+            }
+
+            if (!TryGetParticipantId(out int participantId))
+            {
+                return Unauthorized();
+            }
+
+            if (string.IsNullOrWhiteSpace(request.Participantname) ||
+                string.IsNullOrWhiteSpace(request.Participantsurname))
+            {
+                return BadRequest(new
+                {
+                    message = "Name and surname are required."
+                });
+            }
+
+            if (!IsValidEmail(request.ParticipantEmail))
+            {
+                return BadRequest(new
+                {
+                    message = "Email must end with @gmail.com."
+                });
+            }
+
+            try
+            {
+                using SqlConnection connection =
+                    new SqlConnection(connectionString);
+
+                connection.Open();
+
+                // Check whether another participant uses this email
+                string checkQuery =
+                    "SELECT COUNT(*) FROM Participant " +
+                    "WHERE LTRIM(RTRIM(Email)) = @email " +
+                    "AND participantID <> @id";
+
+                using (SqlCommand checkCommand =
+                    new SqlCommand(checkQuery, connection))
+                {
+                    checkCommand.Parameters.AddWithValue(
+                        "@email", request.ParticipantEmail.Trim());
+
+                    checkCommand.Parameters.AddWithValue(
+                        "@id", participantId);
+
+                    int existingEmail =
+                        (int)checkCommand.ExecuteScalar()!;
+
+                    if (existingEmail > 0)
+                    {
+                        return Conflict(new
+                        {
+                            message = "This email address is already in use."
+                        });
+                    }
+                }
+
+                string updateQuery =
+                    "UPDATE Participant SET " +
+                    "Participantname = @name, " +
+                    "Participantsurname = @surname, " +
+                    "Email = @email, " +
+                    "ProfileImagePath = @imagePath " +
+                    "WHERE participantID = @id";
+
+                using SqlCommand command =
+                    new SqlCommand(updateQuery, connection);
+
+                command.Parameters.AddWithValue(
+                    "@name", request.Participantname.Trim());
+
+                command.Parameters.AddWithValue(
+                    "@surname", request.Participantsurname.Trim());
+
+                command.Parameters.AddWithValue(
+                    "@email", request.ParticipantEmail.Trim());
+
+                command.Parameters.AddWithValue(
+                    "@imagePath",
+                    (object?)request.ProfileImagePath ?? DBNull.Value);
+
+                command.Parameters.AddWithValue("@id", participantId);
+
+                int rowsAffected = command.ExecuteNonQuery();
+
+                if (rowsAffected == 0)
+                {
+                    return NotFound();
+                }
+
+                return Ok(new
+                {
+                    message = "Profile updated successfully."
+                });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new
+                {
+                    message = "An error occurred while updating the profile."
+                });
+            }
+        }
     }
 
     // Request model used by the Participant login endpoint

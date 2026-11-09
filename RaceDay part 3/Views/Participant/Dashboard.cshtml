@@ -1,27 +1,57 @@
 ﻿@{
     ViewData["Title"] = "Participant Dashboard";
+
     var userName = Context.Session.GetString("UserName");
+    var profileImage = Context.Session.GetString("ProfileImagePath");
 }
 
 <section class="dashboard-page">
 
     <!-- WELCOME HERO -->
     <div class="dashboard-hero participant-hero">
-        <div class="dashboard-hero-content">
-            <span class="dashboard-eyebrow">
-                <span class="eyebrow-dot"></span>
-                PARTICIPANT PORTAL
-            </span>
 
-            <h1>Ready to make<br />your <span>next move?</span></h1>
+        <div class="dashboard-hero-content">
+
+            <div class="participant-welcome-profile">
+
+                @if (!string.IsNullOrEmpty(profileImage))
+                {
+                    <img src="@profileImage"
+                         alt="Your profile picture"
+                         class="participant-avatar" />
+                }
+                else
+                {
+                    <div class="participant-avatar participant-avatar-placeholder">
+                        👤
+                    </div>
+                }
+
+                <div>
+                    <span class="dashboard-eyebrow">
+                        <span class="eyebrow-dot"></span>
+                        PARTICIPANT PORTAL
+                    </span>
+
+                    <p class="participant-welcome-name">
+                        @(string.IsNullOrWhiteSpace(userName) ? "Athlete" : userName)
+                    </p>
+                </div>
+
+            </div>
+
+            <h1>
+                Ready to make<br />
+                your <span>next move?</span>
+            </h1>
 
             <p>
-                Welcome back, @(string.IsNullOrWhiteSpace(userName) ? "Athlete" : userName).
                 Discover competitions, manage your registrations and
                 keep track of your racing journey.
             </p>
 
             <div class="dashboard-hero-actions">
+
                 <a asp-controller="Event"
                    asp-action="Index"
                    class="btn btn-dashboard-primary">
@@ -33,7 +63,9 @@
                    class="btn btn-dashboard-secondary">
                     My Registrations
                 </a>
+
             </div>
+
         </div>
 
         <div class="dashboard-hero-visual" aria-hidden="true">
@@ -45,23 +77,30 @@
 
         <div class="hero-decoration hero-decoration-one"></div>
         <div class="hero-decoration hero-decoration-two"></div>
+
     </div>
+
 
     <!-- SECTION HEADING -->
     <div class="dashboard-section-heading">
+
         <div>
             <span class="section-kicker">YOUR SPACE</span>
             <h2>Participant Hub</h2>
             <p>Everything you need to stay connected to your sporting journey.</p>
         </div>
+
     </div>
+
 
     <!-- DASHBOARD CARDS -->
     <div class="row g-4">
 
         <!-- BROWSE EVENTS -->
         <div class="col-lg-4 col-md-6">
+
             <div class="dashboard-feature-card h-100">
+
                 <div class="feature-card-top">
                     <div class="feature-icon orange-icon" aria-hidden="true">
                         🏁
@@ -81,12 +120,17 @@
                    class="feature-link">
                     Explore events <span aria-hidden="true">→</span>
                 </a>
+
             </div>
+
         </div>
+
 
         <!-- REGISTRATIONS -->
         <div class="col-lg-4 col-md-6">
+
             <div class="dashboard-feature-card h-100">
+
                 <div class="feature-card-top">
                     <div class="feature-icon blue-icon" aria-hidden="true">
                         📋
@@ -106,17 +150,58 @@
                    class="feature-link">
                     View registrations <span aria-hidden="true">→</span>
                 </a>
+
             </div>
+
         </div>
+
+
+        <!-- MY PROFILE -->
+        <div class="col-lg-4 col-md-6">
+
+            <div class="dashboard-feature-card h-100">
+
+                <div class="feature-card-top">
+
+                    <div class="feature-icon purple-icon" aria-hidden="true">
+                        👤
+                    </div>
+
+                    <span class="feature-number">03</span>
+
+                </div>
+
+                <h3>My Profile</h3>
+
+                <p>
+                    Manage your personal information, update your
+                    account details and upload your profile picture.
+                </p>
+
+                <a asp-controller="Participant"
+                   asp-action="Profile"
+                   class="feature-link">
+                    Manage my profile <span aria-hidden="true">→</span>
+                </a>
+
+            </div>
+
+        </div>
+
 
         <!-- RESULTS -->
         <div class="col-lg-4 col-md-6">
+
             <div class="dashboard-feature-card h-100">
+
                 <div class="feature-card-top">
+
                     <div class="feature-icon green-icon" aria-hidden="true">
                         🏆
                     </div>
-                    <span class="feature-number">03</span>
+
+                    <span class="feature-number">04</span>
+
                 </div>
 
                 <h3>My Results</h3>
@@ -131,20 +216,70 @@
                    class="feature-link">
                     View my results <span aria-hidden="true">→</span>
                 </a>
+
             </div>
+
         </div>
 
     </div>
+
 
     <!-- BOTTOM BANNER -->
     <div class="dashboard-bottom-banner">
+
         <div>
-            <span class="section-kicker">THE FINISH LINE IS JUST THE BEGINNING</span>
+            <span class="section-kicker">
+                THE FINISH LINE IS JUST THE BEGINNING
+            </span>
+
             <h3>Every race tells a story.</h3>
-            <p>Stay active, challenge yourself and make every competition count.</p>
+
+            <p>
+                Stay active, challenge yourself and make every competition count.
+            </p>
         </div>
 
         <span class="bottom-banner-icon" aria-hidden="true">🏅</span>
+
     </div>
 
 </section>
+
+
+<style>
+
+    .participant-welcome-profile {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 24px;
+    }
+
+    .participant-avatar {
+        width: 58px;
+        height: 58px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid rgba(255,255,255,0.8);
+    }
+
+    .participant-avatar-placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,0.15);
+        font-size: 26px;
+    }
+
+    .participant-welcome-name {
+        color: white;
+        font-weight: 600;
+        margin: 5px 0 0;
+    }
+
+    .purple-icon {
+        background: #eee8ff;
+        color: #7445d5;
+    }
+
+</style>

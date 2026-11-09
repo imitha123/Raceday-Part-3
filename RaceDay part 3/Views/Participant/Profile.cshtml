@@ -1,0 +1,178 @@
+﻿@model RaceDay_part_3.ViewModels.ParticipantProfileViewModel
+
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="container mt-5 mb-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <div class="card shadow border-0">
+
+                <div class="card-header bg-primary text-white p-4">
+                    <h3 class="mb-1">My Profile</h3>
+                    <p class="mb-0">
+                        Manage your personal information and profile picture.
+                    </p>
+                </div>
+
+                <div class="card-body p-4">
+
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success">
+                            @TempData["Success"]
+                        </div>
+                    }
+
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger">
+                            @ViewBag.Error
+                        </div>
+                    }
+
+                    <div asp-validation-summary="All"
+                         class="text-danger mb-3"></div>
+
+                    <form asp-action="Profile"
+                          method="post"
+                          enctype="multipart/form-data">
+
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden"
+                               asp-for="ParticipantID" />
+
+                        <input type="hidden"
+                               asp-for="ProfileImagePath" />
+
+                        <div class="text-center mb-4">
+
+                            @if (!string.IsNullOrEmpty(Model.ProfileImagePath))
+                            {
+                                <img id="profilePreview"
+                                     src="@Model.ProfileImagePath"
+                                     alt="Profile Picture"
+                                     class="rounded-circle shadow"
+                                     style="width:150px;height:150px;object-fit:cover;" />
+                            }
+                            else
+                            {
+                                <img id="profilePreview"
+                                     src="https://placehold.co/150x150?text=Profile"
+                                     alt="Profile Picture"
+                                     class="rounded-circle shadow"
+                                     style="width:150px;height:150px;object-fit:cover;" />
+                            }
+
+                            <div class="mt-3">
+
+                                <label class="form-label fw-bold">
+                                    Profile Picture
+                                </label>
+
+                                <input asp-for="ProfileImage"
+                                       type="file"
+                                       class="form-control"
+                                       accept=".jpg,.jpeg,.png,.webp"
+                                       id="profileImageInput" />
+
+                                <small class="text-muted">
+                                    JPG, PNG or WEBP. Maximum size: 5 MB.
+                                </small>
+
+                                <span asp-validation-for="ProfileImage"
+                                      class="text-danger"></span>
+
+                            </div>
+
+                        </div>
+
+                        <hr />
+
+                        <div class="mb-3">
+
+                            <label asp-for="ParticipantName"
+                                   class="form-label"></label>
+
+                            <input asp-for="ParticipantName"
+                                   class="form-control" />
+
+                            <span asp-validation-for="ParticipantName"
+                                  class="text-danger"></span>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label asp-for="ParticipantSurname"
+                                   class="form-label"></label>
+
+                            <input asp-for="ParticipantSurname"
+                                   class="form-control" />
+
+                            <span asp-validation-for="ParticipantSurname"
+                                  class="text-danger"></span>
+
+                        </div>
+
+                        <div class="mb-4">
+
+                            <label asp-for="Email"
+                                   class="form-label"></label>
+
+                            <input asp-for="Email"
+                                   class="form-control" />
+
+                            <span asp-validation-for="Email"
+                                  class="text-danger"></span>
+
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+
+                            <a asp-action="Dashboard"
+                               class="btn btn-outline-secondary">
+                                Back to Dashboard
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-primary">
+                                Save Changes
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.getElementById("profileImageInput")
+            .addEventListener("change", function (event) {
+
+                const file = event.target.files[0];
+
+                if (file) {
+                    document.getElementById("profilePreview").src =
+                        URL.createObjectURL(file);
+                }
+            });
+    </script>
+}

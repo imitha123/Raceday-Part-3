@@ -376,5 +376,39 @@ namespace RaceDay_part_3.Services
 
             return await _httpClient.SendAsync(request);
         }
+
+        // GET PARTICIPANT PROFILE
+        public async Task<HttpResponseMessage> GetParticipantProfileAsync(
+            string token)
+        {
+            var request = CreateAuthorizedRequest(
+                HttpMethod.Get,
+                "api/Participant/Profile",
+                token);
+
+            return await _httpClient.SendAsync(request);
+        }
+
+
+        // UPDATE PARTICIPANT PROFILE
+        public async Task<HttpResponseMessage> UpdateParticipantProfileAsync(
+            ParticipantProfileViewModel model,
+            string token)
+        {
+            var request = CreateAuthorizedRequest(
+                HttpMethod.Put,
+                "api/Participant/Profile",
+                token);
+
+            request.Content = JsonContent.Create(new
+            {
+                participantname = model.ParticipantName,
+                participantsurname = model.ParticipantSurname,
+                participantEmail = model.Email,
+                profileImagePath = model.ProfileImagePath
+            });
+
+            return await _httpClient.SendAsync(request);
+        }
     }
 }
