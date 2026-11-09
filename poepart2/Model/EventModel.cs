@@ -10,5 +10,7 @@
         public int organizerID { get; set; }
 
         public int categoryID { get; set; }
+
+        public string? BannerImagePath { get; set; }
     }
 }
