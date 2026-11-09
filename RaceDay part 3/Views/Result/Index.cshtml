@@ -88,10 +88,21 @@
         </div>
     }
 
-    <a asp-controller="Organizer"
-       asp-action="Dashboard"
-       class="btn btn-secondary">
-        Back to Dashboard
-    </a>
+    @if (isOrganizer)
+    {
+        <a asp-controller="Organizer"
+           asp-action="Dashboard"
+           class="btn btn-outline-secondary mt-4">
+            Back to Dashboard
+        </a>
+    }
+    else
+    {
+        <a asp-controller="Participant"
+           asp-action="Dashboard"
+           class="btn btn-outline-secondary mt-4">
+            Back to Dashboard
+        </a>
+    }
 
 </div>

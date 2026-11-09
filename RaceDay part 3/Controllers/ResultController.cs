@@ -69,9 +69,32 @@ namespace RaceDay_part_3.Controllers
                 return View(new List<ResultViewModel>());
             }
 
+            var apiResponse = await response.Content.ReadAsStringAsync();
+
+            Console.WriteLine("========== RESULTS API DEBUG ==========");
+            Console.WriteLine("API RESPONSE:");
+            Console.WriteLine(apiResponse);
+
             var results =
-                await response.Content.ReadFromJsonAsync<List<ResultViewModel>>()
-                ?? new List<ResultViewModel>();
+                JsonSerializer.Deserialize<List<ResultViewModel>>(
+                    apiResponse,
+                    new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    }) ?? new List<ResultViewModel>();
+
+            Console.WriteLine($"TOTAL RESULTS RECEIVED: {results.Count}");
+
+            foreach (var result in results)
+            {
+                Console.WriteLine(
+                    $"ResultID: {result.ResultID}, " +
+                    $"ParticipantID: {result.ParticipantID}, " +
+                    $"Position: {result.Position}, " +
+                    $"Score: {result.Score}");
+            }
+
+            Console.WriteLine("=======================================");
 
             // PARTICIPANTS CAN ONLY SEE THEIR OWN RESULTS
             if (!IsOrganizer())
