@@ -376,6 +376,8 @@ Possible future enhancements include:
 
 **Repository:** RaceDay Part 3
 
+**YouTube Video Link:** https://youtu.be/m8S4vwWvUYY
+
 ---
 
 ## Conclusion
